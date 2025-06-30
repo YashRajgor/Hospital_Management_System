@@ -1,0 +1,77 @@
+﻿@{
+    Layout = null;
+}
+<div>
+    <style>
+        body {
+            background-color: #f4f7fe;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 80px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background-color: #2b8eff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .form-control::placeholder {
+            font-size: 0.9rem;
+        }
+
+        .toggle-password {
+            cursor: pointer;
+        }
+    </style>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <div class="login-container shadow-sm">
+        <div class="header">
+            <h4 class="mb-0">Hospital Management System</h4>
+        </div>
+        <div class="p-4">
+            <h5 class="text-center mb-3">Sign In</h5>
+            <form method="post">
+                <div class="mb-3">
+                    <label class="form-label">Email address</label>
+                    <input type="text" class="form-control" name="email" placeholder="Enter your email" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label d-flex justify-content-between">
+                        <span>Password</span>
+                        <a href="#" class="small">Forgot your password?</a>
+                    </label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password" required />
+                        <span class="input-group-text toggle-password" onclick="togglePassword()">👁️</span>
+                    </div>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">Log In</button>
+                </div>
+            </form>
+            <div class="text-center mt-3">
+                <small><span class="text-danger">@TempData["Message"]</span></small><br />
+                <small>Don’t have an account? <a href="#">Sign Up</a></small>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword() {
+            const password = document.getElementById("password");
+            password.type = password.type === "password" ? "text" : "password";
+        }
+    </script>
+</div>
