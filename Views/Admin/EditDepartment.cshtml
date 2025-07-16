@@ -1,0 +1,104 @@
+﻿@model Hospital_Management_System.Models.Department
+
+@{
+    ViewBag.Title = "Edit Department";
+    Layout = null; // or use Layout = "~/Views/Shared/_Layout.cshtml
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<!-- Bootstrap CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<!-- Animate.css for fade-in effect -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+
+<style>
+    body {
+        background-color: #f4f7fe;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .edit-container {
+        max-width: 450px;
+        margin: 80px auto;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-header {
+        background-color: #2b8eff;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(43, 142, 255, 0.25);
+        border-color: #2b8eff;
+    }
+
+    .form-check-input {
+        transform: scale(1.1);
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: #2b8eff;
+        border-color: #2b8eff;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #196fd9;
+            border-color: #196fd9;
+        }
+</style>
+
+<div class="edit-container animate__animated animate__fadeIn">
+    <div class="edit-header">
+        ✏️ Edit Department
+    </div>
+    <div class="p-4">
+        <form method="post" asp-action="EditDepartment" asp-controller="Admin">
+            <input type="hidden" name="id" value="@Model.departmentId" />
+
+            <div class="mb-3">
+                <label for="DepartmentName" class="form-label">Department Name</label>
+                <input type="text" asp-for="DepartmentName" class="form-control" name="DepartmentName" placeholder="Enter department name" value="@Model.DepartmentName" />
+                <span asp-validation-for="DepartmentName" class="text-danger"></span>
+
+            </div>
+
+            <div class="mb-3">
+                <label for="DepartmentDescription" class="form-label">Description</label>
+                <input asp-for="DepartmentDescription" class="form-control" name="DepartmentDescription" rows="3" placeholder="Enter description" value="@Model.DepartmentDescription" />
+                <span asp-validation-for="DepartmentDescription" class="text-danger"></span>
+            </div>
+
+            <div class="form-check mb-4">
+                <input type="checkbox" class="form-check-input" id="IsActive" name="IsActive" value="1" @(Model.IsActive == 1 ? "checked" : "") />
+                <label class="form-check-label" for="IsActive">Is Active</label>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" asp-action="EditDepartment" class="btn btn-primary">Update Department</button>
+            </div>
+        </form>
+        @{
+            if (TempData["alert"] == "Exists")
+            {
+                <small><span class="text-warning">Department Already Exists</span></small>
+        
+                <br />
+            }
+            else if (TempData["Message"] == "error")
+            {
+                <small><span class="text-danger">Department Not Update</span></small>
+            }
+        }
+    </div>
+</div>

@@ -1,19 +1,108 @@
 ﻿using Hospital_Management_System.Classes;
+using Hospital_Management_System.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Data.SqlClient;
 
 namespace Hospital_Management_System.Controllers
 {
     public class AdminController : Controller
     {
+        public static List<Department> departmentList = new List<Department>();
+        ManageDepartment manageDepartment = new ManageDepartment();
         public IActionResult Index()
         {
             return View();
         }
         public IActionResult AddDepartment()
         {
+            if (HttpContext.Session.GetString("username") == null)
+            {
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddDepartment(string DepartmentName, string DepartmentDescription)
+        {
+            //TempData["DepartmentMessage"] = null;
+            int? userid = HttpContext.Session.GetInt32("UserId");
+
+            int reader = manageDepartment.Add_Department(DepartmentName, DepartmentDescription, DateTime.Now, (int)userid);
+            //ViewBag.Dadd = null;
+            if (reader == 2)
+            {
+                TempData["Message"] = "Exists";
+            }
+            else if (reader == 1)
+            {
+                TempData["Message"] = "Sussfully";
+            }
+            else
+            {
+                TempData["Message"] = "failed";
+            }
             return View();
         }
+
+        public IActionResult ManageDepartment()
+        {
+            //int? userid = HttpContext.Session.GetInt32("UserId");
+
+            var dataRead = manageDepartment.getAllDepartment();
+
+            return View(dataRead);
+        }
+
+
+        public IActionResult DeleteDepartment(int departmentId)
+        {
+            int result = manageDepartment.DeleteDepartment(departmentId);
+            return RedirectToAction("ManageDepartment");
+        }
+
+        public IActionResult EditDepartment(int departmentId)
+        {
+            Department obj = departmentList.Find(i => i.departmentId == departmentId);
+            if (obj == null)
+            {
+                return RedirectToAction("ManageDepartment");
+            }
+            HttpContext.Session.SetInt32("deptId", obj.departmentId);
+            HttpContext.Session.SetString("deptName", obj.DepartmentName);
+            return View(obj);
+        }
+
+        [HttpPost]
+        public IActionResult EditDepartment(int id, string DepartmentName, string DepartmentDescription, int IsActive = 0)
+        {
+            int? userid = HttpContext.Session.GetInt32("UserId");
+            int result = manageDepartment.check_Department_Before_update(id, DepartmentName);
+            Department? obj = departmentList.Find(i => i.departmentId == id);
+
+            if (result == 1)
+            {
+                TempData["alert"] = "Exists";
+                return View(obj);
+            }
+            else
+            {
+                result = manageDepartment.update_Department(id, DepartmentName, DepartmentDescription, IsActive, (int)userid);
+
+                if (result == 1)
+                {
+                    return RedirectToAction("ManageDepartment");
+                }
+                TempData["error"] = "Error In Department Update";
+                return View(obj);
+            }
+        }
+
         public IActionResult Login()
         {
             if (HttpContext.Session.GetString("username") == null)
@@ -29,7 +118,7 @@ namespace Hospital_Management_System.Controllers
         [HttpPost]
         public IActionResult Login(string email, string password)
         {
-            DataBase_Method dataBase_Method = new DataBase_Method();
+            LoginMethod dataBase_Method = new LoginMethod();
             SqlDataReader reader = dataBase_Method.Check_Login(email, password);
             if (reader.Read())
             {

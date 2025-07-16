@@ -1,8 +1,13 @@
+using Hospital_Management_System.Classes;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSession();
 builder.Services.AddControllersWithViews();
+
+//builder.Services.AddScoped<DBHelper>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

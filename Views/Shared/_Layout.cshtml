@@ -5,79 +5,92 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Hospital Management System</title>
 
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
     <!-- Bootstrap & Icons -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
 
-    <!-- Custom Site Styles -->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Hospital_Management_System.styles.css" asp-append-version="true" />
 
-    <!-- Animate.css for dropdown animation -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet" />
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
     <style>
-        /* Sub Navbar Dropdown Styling */
-        /* === Top Dark Navbar === */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* Top navbar */
         .navbar-dark .navbar-nav .nav-link {
-            color: #f8f9fa !important; /* Light gray */
+            color: #f8f9fa !important;
         }
 
-        .navbar-dark .navbar-nav .nav-link:hover {
-            color: #ffc107 !important; /* Yellow highlight on hover */
-        }
+            .navbar-dark .navbar-nav .nav-link:hover {
+                color: #ffc107 !important;
+            }
 
-        /* === Sub Light Navbar === */
+        /* Sub navbar */
         .navbar-light .navbar-nav .nav-link {
-            color: #212529 !important; /* Bootstrap default dark */
+            color: #212529 !important;
             font-weight: 500;
         }
 
-            .navbar-light .navbar-nav .nav-link:hover,
-            .navbar-light .navbar-nav .nav-link:focus {
-                color: #0d6efd !important; /* Bootstrap primary blue */
-                background-color: rgba(13, 110, 253, 0.08); /* soft blue hover */
+            .navbar-light .navbar-nav .nav-link:hover {
+                color: #0d6efd !important;
+                background-color: rgba(13, 110, 253, 0.08);
                 border-radius: 5px;
             }
 
-        /* Dropdown Items */
-        .dropdown-menu .dropdown-item {
-            color: #212529; /* default black */
-        }
-
-            .dropdown-menu .dropdown-item:hover {
-                color: #0d6efd;
-                background-color: #e7f1ff;
+            .navbar-light .navbar-nav .nav-link.active {
+                color: #0d6efd !important;
+                border-bottom: 2px solid #0d6efd;
             }
 
-        /* Active Link Example */
-        .navbar-light .navbar-nav .nav-link.active {
-            color: #0d6efd !important;
-            border-bottom: 2px solid #0d6efd;
+        /* Hover dropdown logic for large screens */
+        @@media (min-width: 992px) {
+            .navbar .dropdown:hover .dropdown-menu {
+                display: block;
+                animation: fadeIn 0.3s ease-in-out;
+            }
         }
 
+        @@keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
 
-        .navbar .dropdown-menu {
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .dropdown-menu {
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             padding: 8px 0;
-            overflow: hidden;
-            box-sizing: border-box;
             min-width: 200px;
-            animation: fadeInDropdown 0.3s ease-in-out;
         }
 
-        .navbar .dropdown-item {
+        .dropdown-item {
             padding: 10px 20px;
-            font-weight: 500;
-            transition: all 0.2s ease-in-out;
+            transition: all 0.2s ease;
         }
 
-            .navbar .dropdown-item:hover {
+            .dropdown-item:hover {
                 background-color: #e6f0ff;
                 color: #0d6efd;
                 transform: translateX(2px);
             }
+
+        .navbar-toggler {
+            border-color: rgba(0, 0, 0, 0.1);
+        }
 
         .navbar .dropdown-toggle::after {
             transition: transform 0.3s ease;
@@ -87,17 +100,8 @@
             transform: rotate(180deg);
         }
 
-        .badge:hover {
-            transform: scale(1.05);
-        }
-
-        .navbar .nav-link.active {
-            border-bottom: 2px solid #0d6efd;
-            color: #0d6efd !important;
-        }
-
-        .navbar-toggler {
-            border-color: rgba(0,0,0,0.1);
+        .badge {
+            font-size: 0.9rem;
         }
 
     </style>
@@ -109,7 +113,7 @@
             <a class="navbar-brand fw-bold fs-4" href="#">🏥 Hospital Management</a>
             <div class="ms-auto d-flex align-items-center">
                 <span class="me-2 text-white">Welcome,</span>
-                <span class="badge bg-secondary rounded-pill px-3 py-2"> @Context.Session.GetString("username")</span>
+                <span class="badge bg-secondary rounded-pill px-3 py-2">@Context.Session.GetString("username")</span>
             </div>
         </nav>
 
@@ -122,51 +126,56 @@
 
                 <div class="collapse navbar-collapse" id="subNavbar">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 fw-medium">
+                        <!-- Department Dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="departmentDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-building"></i> Department
                             </a>
-                            <ul class="dropdown-menu animate__animated animate__fadeIn" aria-labelledby="departmentDropdown">
-                                <li><a class="dropdown-item" href="#">Add Department</a></li>
-                                <li><a class="dropdown-item" href="#">Manage Departments</a></li>
+                            <ul class="dropdown-menu" aria-labelledby="departmentDropdown">
+                                <li><a class="dropdown-item" asp-action="AddDepartment" asp-controller="Admin">Add Department</a></li>
+                                <li><a class="dropdown-item" asp-action="ManageDepartment" asp-controller="Admin">Manage Departments</a></li>
                             </ul>
                         </li>
 
+                        <!-- Doctor Dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="doctorDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-person-badge"></i> Doctor
                             </a>
-                            <ul class="dropdown-menu animate__animated animate__fadeIn" aria-labelledby="doctorDropdown">
-                                <li><a class="dropdown-item" href="#">Add Doctor</a></li>
-                                <li><a class="dropdown-item" href="#">Manage Doctors</a></li>
+                            <ul class="dropdown-menu" aria-labelledby="doctorDropdown">
+                                <li><a class="dropdown-item" asp-action="addDoctor" asp-controller="Doctor">Add Doctor</a></li>
+                                <li><a class="dropdown-item" asp-action="SelectAllDoctor" asp-controller="Doctor">Manage Doctors</a></li>
                             </ul>
                         </li>
 
+                        <!-- Patient Dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="patientDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-heart-pulse"></i> Patient
                             </a>
-                            <ul class="dropdown-menu animate__animated animate__fadeIn" aria-labelledby="patientDropdown">
-                                <li><a class="dropdown-item" href="#">Add Patient</a></li>
-                                <li><a class="dropdown-item" href="#">Manage Patients</a></li>
+                            <ul class="dropdown-menu" aria-labelledby="patientDropdown">
+                                <li><a class="dropdown-item" asp-action="addPatient" asp-controller="Patient">Add Patient</a></li>
+                                <li><a class="dropdown-item" asp-action="selectAllPatient" asp-controller="Patient">Manage Patients</a></li>
                             </ul>
                         </li>
 
+                        <!-- Appointment Dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="appointmentDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-calendar-plus"></i> Appointment
                             </a>
-                            <ul class="dropdown-menu animate__animated animate__fadeIn" aria-labelledby="appointmentDropdown">
+                            <ul class="dropdown-menu" aria-labelledby="appointmentDropdown">
                                 <li><a class="dropdown-item" href="#">Schedule Appointment</a></li>
                                 <li><a class="dropdown-item" href="#">View Appointments</a></li>
                             </ul>
                         </li>
 
+                        <!-- Doctor Department Dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="ddDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-diagram-3"></i> Doctor Department
                             </a>
-                            <ul class="dropdown-menu animate__animated animate__fadeIn" aria-labelledby="ddDropdown">
+                            <ul class="dropdown-menu" aria-labelledby="ddDropdown">
                                 <li><a class="dropdown-item" href="#">Assign</a></li>
                                 <li><a class="dropdown-item" href="#">Manage</a></li>
                             </ul>
@@ -189,6 +198,7 @@
         </div>
     </footer> *@
 
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
