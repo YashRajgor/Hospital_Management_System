@@ -1,5 +1,6 @@
 ﻿using Hospital_Management_System.Controllers;
 using Hospital_Management_System.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
 using System.Collections.Specialized;
 
@@ -14,7 +15,7 @@ namespace Hospital_Management_System.Classes
             dbHelper = new DBHelper();
         }
 
-        public int addDoctor(Doctor doctor,int userId)
+        public int addDoctor(Doctor doctor, int userId)
         {
             SqlParameter[] parameter = new SqlParameter[]
             {
@@ -75,7 +76,7 @@ namespace Hospital_Management_System.Classes
             return DoctorController.doctorsList;
         }
 
-        public int check_Doctor_Before_Update(int id,string name)
+        public int check_Doctor_Before_Update(int id, string name)
         {
             SqlParameter[] parameter = new SqlParameter[]
             {
@@ -83,9 +84,9 @@ namespace Hospital_Management_System.Classes
                 new SqlParameter("@Name",name)
             };
 
-            SqlDataReader reader= dbHelper.ExecuteReader("SP_Check_Doctor_Before_Update",parameter); 
+            SqlDataReader reader = dbHelper.ExecuteReader("SP_Check_Doctor_Before_Update", parameter);
 
-            if(reader.HasRows)
+            if (reader.HasRows)
             {
                 reader.Close();
                 return 1;
@@ -96,7 +97,7 @@ namespace Hospital_Management_System.Classes
 
         }
 
-        public int update_Doctor(Doctor doctor,int userId)
+        public int update_Doctor(Doctor doctor, int userId)
         {
             SqlParameter[] parameter = new SqlParameter[]
             {
@@ -110,7 +111,7 @@ namespace Hospital_Management_System.Classes
                 new SqlParameter("@id",userId)
             };
 
-            return dbHelper.ExecuteNonQuery("SP_Doctor_Update",parameter);
+            return dbHelper.ExecuteNonQuery("SP_Doctor_Update", parameter);
         }
 
         public int delete_Doctor(int doctorid)
@@ -120,7 +121,23 @@ namespace Hospital_Management_System.Classes
                 new SqlParameter("@DoctorId",doctorid)
             };
 
-            return dbHelper.ExecuteNonQuery("SP_Delete_Doctor",parameter);
+            return dbHelper.ExecuteNonQuery("SP_Delete_Doctor", parameter);
+        }
+
+        public List<SelectListItem> getDepartmentName()
+        {
+            List<SelectListItem> departmentList = new List<SelectListItem>();
+            SqlDataReader reader = dbHelper.ExecuteReader("SP_Display_Department");
+
+            while (reader.Read())
+            {
+                departmentList.Add(new SelectListItem
+                {
+                    Value = reader["DepartmentId"].ToString(),
+                    Text = reader["DepartmentName"].ToString()
+                });
+            }
+            return departmentList;
         }
 
     }

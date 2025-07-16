@@ -1,6 +1,7 @@
 ﻿using Hospital_Management_System.Classes;
 using Hospital_Management_System.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Immutable;
 
 namespace Hospital_Management_System.Controllers
@@ -9,6 +10,7 @@ namespace Hospital_Management_System.Controllers
     {
         ManageDoctor manageDoctor = new ManageDoctor();
         public static List<Doctor> doctorsList = new List<Doctor>();
+
         int? userId = null;
 
         public IActionResult addDoctor()
@@ -19,6 +21,8 @@ namespace Hospital_Management_System.Controllers
             {
                 return RedirectToAction("Login", "Admin");
             }
+
+            ViewBag.DepartmentList = manageDoctor.getDepartmentName();
             return View();
         }
         public IActionResult SelectAllDoctor()
@@ -33,7 +37,7 @@ namespace Hospital_Management_System.Controllers
         }
 
         [HttpPost]
-        public IActionResult addDoctor(Doctor doctor)
+        public IActionResult addDoctor(Doctor doctor,List<string> SelectedDepartments)
         {
             userId = HttpContext.Session.GetInt32("UserId");
 
@@ -51,6 +55,11 @@ namespace Hospital_Management_System.Controllers
             else
             {
                 int result = manageDoctor.addDoctor(doctor,(int)userId);
+
+                foreach(var deptId in SelectedDepartments)
+                {
+                    Console.WriteLine("Selected Department ID: " +Convert.ToInt32(deptId));
+                }
 
                 if (result > 0)
                 {
