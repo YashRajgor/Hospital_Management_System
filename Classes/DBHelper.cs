@@ -47,7 +47,7 @@ namespace Hospital_Management_System.Classes
                 cmd.Parameters.AddRange(perameter);
             }
 
-            return cmd.ExecuteNonQuery(); ;
+            return cmd.ExecuteNonQuery(); 
         }
 
         public object ExecuteScalar(string storedProcedure, SqlParameter[] parameters)

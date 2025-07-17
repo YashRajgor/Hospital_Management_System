@@ -37,7 +37,7 @@ namespace Hospital_Management_System.Controllers
         }
 
         [HttpPost]
-        public IActionResult addDoctor(Doctor doctor,List<string> SelectedDepartments)
+        public IActionResult addDoctor(Doctor doctor, List<string> SelectedDepartments)
         {
             userId = HttpContext.Session.GetInt32("UserId");
 
@@ -54,11 +54,23 @@ namespace Hospital_Management_System.Controllers
             }
             else
             {
-                int result = manageDoctor.addDoctor(doctor,(int)userId);
+                int result = manageDoctor.addDoctor(doctor, (int)userId);
 
-                foreach(var deptId in SelectedDepartments)
+                int id = manageDoctor.getDoctorId(doctor.doctorName);
+
+                if (id > 0)
                 {
-                    Console.WriteLine("Selected Department ID: " +Convert.ToInt32(deptId));
+                    if (SelectedDepartments.Count > 0)
+                    {
+                        foreach (var deptId in SelectedDepartments)
+                        {
+                            manageDoctor.addDoctorDepartment(id, Convert.ToInt32(deptId), (int)userId);
+                        }
+                    }
+                }
+                else
+                {
+                    TempData["Message"] = "DoctorNotFound";
                 }
 
                 if (result > 0)
@@ -71,6 +83,7 @@ namespace Hospital_Management_System.Controllers
                 }
             }
 
+            ViewBag.DepartmentList = manageDoctor.getDepartmentName();
             return View();
         }
 
@@ -100,7 +113,7 @@ namespace Hospital_Management_System.Controllers
             userId = HttpContext.Session.GetInt32("UserId");
             if (userId != null)
             {
-                
+
                 if (HttpContext.Session.GetInt32("Id") != null)
                 {
 

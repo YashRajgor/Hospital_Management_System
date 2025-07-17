@@ -124,10 +124,11 @@ namespace Hospital_Management_System.Classes
             return dbHelper.ExecuteNonQuery("SP_Delete_Doctor", parameter);
         }
 
+        #region MyRegion
         public List<SelectListItem> getDepartmentName()
         {
             List<SelectListItem> departmentList = new List<SelectListItem>();
-            SqlDataReader reader = dbHelper.ExecuteReader("SP_Display_Department");
+            SqlDataReader reader = dbHelper.ExecuteReader("SP_Display_Department_And_Id");
 
             while (reader.Read())
             {
@@ -138,7 +139,38 @@ namespace Hospital_Management_System.Classes
                 });
             }
             return departmentList;
+        } 
+        #endregion
+
+        public int getDoctorId(string doctorName)
+        {
+            SqlParameter[] parameter = new SqlParameter[]
+            {
+                new SqlParameter("@name",doctorName)
+            };
+
+            SqlDataReader reader = dbHelper.ExecuteReader("SP_Get_Doctor_Id",parameter);
+
+            if(reader.Read())
+            {
+                int id =Convert.ToInt32(reader["DoctorId"]);
+                reader.Close();
+                return id;
+            }
+            reader.Close();
+            return 0;
         }
 
+        public int addDoctorDepartment(int doctorId,int departmentId,int userId)
+        {
+            SqlParameter[] parameter = new SqlParameter[]
+            {
+                new SqlParameter("@doctorId",doctorId),
+                new SqlParameter("@departmentId",departmentId),
+                new SqlParameter("@userId",userId)
+            };
+
+            return dbHelper.ExecuteNonQuery("SP_Add_DoctorDepartment",parameter);
+        }
     }
 }

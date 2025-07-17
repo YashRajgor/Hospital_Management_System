@@ -1,5 +1,4 @@
 ﻿<!-- Include this in your Razor view where dynamic data will be injected -->
-
 @model List<Hospital_Management_System.Models.Department>
 
 <style>
@@ -77,7 +76,17 @@
             transform: scale(1.05);
         }
 </style>
-
+@* TempData["DeleteMessage"] *@
+@{
+    if (TempData["DeleteMessage"] != null)
+    {
+        <div class="mt-4 feedback-message">
+            <div class="alert alert-danger shadow-sm" role="alert">
+                Error During Delete Department
+            </div>
+        </div>
+    }
+}
 <div class="container mt-5">
     <div class="card">
         <div class="card-header">Department List</div>

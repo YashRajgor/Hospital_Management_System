@@ -62,7 +62,14 @@ namespace Hospital_Management_System.Controllers
 
         public IActionResult DeleteDepartment(int departmentId)
         {
-            int result = manageDepartment.DeleteDepartment(departmentId);
+            try
+            {
+                int result = manageDepartment.DeleteDepartment(departmentId);
+            }
+            catch (Exception ex)
+            {
+                TempData["DeleteMessage"] = "Error";
+            }
             return RedirectToAction("ManageDepartment");
         }
 
