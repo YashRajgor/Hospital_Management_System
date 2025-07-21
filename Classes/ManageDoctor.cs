@@ -172,5 +172,71 @@ namespace Hospital_Management_System.Classes
 
             return dbHelper.ExecuteNonQuery("SP_Add_DoctorDepartment",parameter);
         }
+
+        public List<Department> getDoctorSelectDepartmentId(int doctorId)
+        {
+            List<Department> selectedDepartments = new List<Department>();
+            SqlParameter[] parameter = new SqlParameter[]
+            {
+                new SqlParameter("@doctorId",doctorId)
+            };
+
+            SqlDataReader reader = dbHelper.ExecuteReader("SP_Get_DoctorDepartment_Name",parameter);
+
+            Department? department = null;
+            while(reader.Read())
+            {
+                department = new Department();
+                department.departmentId= Convert.ToInt32(reader["DepartmentId"]);
+                department.DepartmentName = reader["DepartmentName"].ToString();
+                selectedDepartments.Add(department);
+            }
+
+            reader.Close();
+            return selectedDepartments;
+        }
+
+        public int deleteDoctorDepartmentById(int departmentid,int doctorId)
+        {
+            SqlParameter[] parameter = new SqlParameter[] 
+            { 
+                new SqlParameter("@id",departmentid),
+                new SqlParameter("@doctorId",doctorId)
+            };
+
+            return dbHelper.ExecuteNonQuery("SP_Delete_DoctorDepartment_By_Id",parameter);
+        }
+
+        public Doctor getDoctorById(int doctorId)
+        {
+            Doctor? doctor = null;
+
+            SqlParameter[] parameter = new SqlParameter[]
+            {
+                new SqlParameter("@doctorId",doctorId)
+            };
+
+            SqlDataReader dr = dbHelper.ExecuteReader("SP_Get_Doctor_By_Id",parameter);
+
+            if (dr.Read())
+            {
+                doctor = new Doctor
+                {
+                    doctorId = Convert.ToInt32(dr["DoctorId"]),
+                    doctorName = dr["Name"].ToString(),
+                    doctorPhone = dr["Phone"].ToString(),
+                    doctorEmail = dr["Email"].ToString(),
+                    doctorQualification = dr["Qualification"].ToString(),
+                    doctorSpecialization = dr["Specialization"].ToString(),
+                    isActive = Convert.ToInt32(dr["isActive"])
+                };
+            }
+
+            dr.Close();
+            return doctor;
+        }
+
     }
 }
+
+               
