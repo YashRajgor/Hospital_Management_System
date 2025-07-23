@@ -124,6 +124,7 @@
                         <tr>
                             <th>Patient Name</th>
                             <th>Date Of Birth</th>
+                            @* <th>Patient Name</th> *@
                             <th>Gender</th>
                             <th>Email</th>
                             <th>Number</th>
@@ -141,8 +142,12 @@
                         @foreach (var doc in Model)
                         {
                             <tr>
+                                @* <button id="btn">click</button> *@
                                 <td>@doc.PatientName</td>
+                                <input type="hidden" id="patientid" value="@doc.patientId" />
+
                                 <td>@doc.dateOfBirth</td>
+                                @* <td>@doc.patientId</td> *@
                                 <td>@doc.gender</td>
                                 <td>@doc.email</td>
                                 <td>@doc.phoneNumber</td>
@@ -184,3 +189,26 @@
         </div>
     </div>
 </div>
+@* <script>
+     const id = document.getElementById('patientid');
+     const btn = document.getElementById('deletebtn');
+
+    btn.addEventListener('click',function()
+    {
+        const data = id.value;
+        console.log(data);
+        fetch('/Patient/deletePatient/'+data,
+        {
+             method:'post',
+             headers: { 'Content-Type': 'application/json' }
+        })
+        .then(res => res.json())
+        .then(data=>
+        {
+            if(data.success)
+            {
+               return alert(data.success);
+            }
+        });
+    });
+</script> *@
