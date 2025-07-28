@@ -50,7 +50,7 @@ namespace Hospital_Management_System.Controllers
 
         public IActionResult ManageDepartment()
         {
-            //int? userid = HttpContext.Session.GetInt32("UserId");
+            //int? userid = HttpContext.Session.GetInt32("UserId")
 
             var dataRead = manageDepartment.getAllDepartment();
 
