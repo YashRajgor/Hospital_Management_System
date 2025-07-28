@@ -73,7 +73,7 @@ namespace Hospital_Management_System.Controllers
         public IActionResult editPatient(int patientId)
         {
             HttpContext.Session.SetInt32("patientId", patientId);
-            Patient patient = Patients.Find(i => i.patientId == patientId);
+            Patient? patient = Patients.Find(i => i.patientId == patientId);
             if (patient == null)
             {
                 return RedirectToAction("selectAllPatient");
@@ -88,10 +88,8 @@ namespace Hospital_Management_System.Controllers
 
             if (userId != null)
             {
-                //if (HttpContext.Session.GetInt32("patientId") != null)
-                //{
                 int result = managePatient.checkBeforePatientUpdate(patient);
-                Patient patientsObj = Patients.Find(i => i.patientId == patient.patientId);
+                Patient? patientsObj = Patients.Find(i => i.patientId == patient.patientId);
                 if (result == 1)
                 {
                     TempData["patientUpdate"] = "Exists";
@@ -112,9 +110,9 @@ namespace Hospital_Management_System.Controllers
                     }
 
                     TempData["patientUpdate"] = "error";
-                    return View(patientsObj);
+                    //return View(patientsObj);
+                    return RedirectToAction("editPatient","Patient", patientsObj);
                 }
-                //}
             }
             else
             {

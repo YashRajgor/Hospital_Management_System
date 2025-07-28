@@ -121,13 +121,13 @@
 
                 <div class="mb-3">
                     <label class="form-label">Username</label>
-                    <input asp-for="userName" class="form-control" placeholder="Enter username" />
+                    <input asp-for="userName" type="text" class="form-control" placeholder="Enter username" />
                     <span asp-validation-for="userName" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Password</label>
-                    <input asp-for="password" type="password" class="form-control" placeholder="Enter password" />
+                    <input asp-for="password" type="text" class="form-control" placeholder="Enter password" />
                     <span asp-validation-for="password" class="text-danger"></span>
                 </div>
 
@@ -144,13 +144,22 @@
                 </div>
 
                 <div class="form-check mb-4">
-                    <input type="checkbox" class="form-check-input" id="IsActive" name="IsActive" value="1" @(Model.isActive== 1 ? "checked" : "") />
+                    <input type="checkbox" class="form-check-input" id="IsActive" name="IsActive" value="1" @(Model.isActive == 1 ? "checked" : "") />
                     <label class="form-check-label" for="IsActive">Is Active</label>
                 </div>
 
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Update User</button>
                 </div>
+                <br />
+                @if (TempData["UserEditMessage"] == "Exists")
+                {
+                    <div class="alert alert-warning">User Already Exists</div>
+                }
+                else if (TempData["UserEditMessage"] == "Error")
+                {
+                    <div class="alert alert-danger">User Not Updated</div>
+                }
             </form>
         </div>
     </div>

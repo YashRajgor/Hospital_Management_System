@@ -90,7 +90,6 @@ namespace Hospital_Management_System.Classes
                 new SqlParameter("@email",user.email),
             };
 
-
             SqlDataReader reader = dbHelper.ExecuteReader("SP_Check_User", parameter);
 
             if(reader.HasRows)
@@ -102,5 +101,21 @@ namespace Hospital_Management_System.Classes
             reader.Close();
             return 0;
         }
+
+        public int updateUser(User user)
+        {
+            SqlParameter[] parameter = new SqlParameter[]
+            {
+                new SqlParameter("@userId",user.UserId),
+                new SqlParameter("@userName",user.userName),
+                new SqlParameter("@password",user.password),
+                new SqlParameter("@email",user.email),
+                new SqlParameter("@mobileno",user.phoneNumber),
+                new SqlParameter("@isActive",user.isActive),
+            };
+
+            return dbHelper.ExecuteNonQuery("SP_Edit_User", parameter);
+        }
+
     }
 }

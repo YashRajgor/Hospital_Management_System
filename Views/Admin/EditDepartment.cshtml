@@ -127,7 +127,7 @@
     <!-- Right Side Form -->
     <div class="right-panel">
         <form method="post" asp-action="EditDepartment" asp-controller="Admin">
-            <input type="hidden" name="id" value="@Model.departmentId" />
+            <input type="hidden" asp-for="departmentId" />
 
             <div class="mb-3">
                 <label class="form-label">Department Name</label>
@@ -154,10 +154,10 @@
             {
                 <div class="alert alert-warning">Department Already Exists</div>
             }
-            else if (TempData["Message"] == "error")
+           @*  else if (TempData["Message"] == "error")
             {
                 <div class="alert alert-danger">Department Not Updated</div>
-            }
+            } *@
         </form>
     </div>
 </div>

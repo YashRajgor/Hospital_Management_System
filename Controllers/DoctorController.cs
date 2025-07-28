@@ -164,7 +164,8 @@ namespace Hospital_Management_System.Controllers
             if (nameCheckResult == 1)
             {
                 TempData["UpdateAlert"] = "Exists";
-                return View(obj);
+                //return View(obj);
+                return RedirectToAction("editDoctor","Doctor",obj);
             }
 
             // Perform update

@@ -28,13 +28,11 @@ namespace Hospital_Management_System.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddDepartment(string DepartmentName, string DepartmentDescription)
+        public IActionResult AddDepartment(Department department)
         {
-            //TempData["DepartmentMessage"] = null;
             int? userid = HttpContext.Session.GetInt32("UserId");
 
-            int reader = manageDepartment.Add_Department(DepartmentName, DepartmentDescription, DateTime.Now, (int)userid);
-            //ViewBag.Dadd = null;
+            int reader = manageDepartment.Add_Department(department, DateTime.Now, (int)userid!);
             if (reader == 2)
             {
                 TempData["Message"] = "Exists";
@@ -75,7 +73,7 @@ namespace Hospital_Management_System.Controllers
 
         public IActionResult EditDepartment(int departmentId)
         {
-            Department obj = departmentList.Find(i => i.departmentId == departmentId);
+            Department? obj = departmentList.Find(i => i.departmentId == departmentId);
             if (obj == null)
             {
                 return RedirectToAction("ManageDepartment");
@@ -86,11 +84,11 @@ namespace Hospital_Management_System.Controllers
         }
 
         [HttpPost]
-        public IActionResult EditDepartment(int id, string DepartmentName, string DepartmentDescription, int IsActive = 0)
+        public IActionResult EditDepartment(Department department)
         {
+            Department? obj = departmentList.Find(i => i.departmentId == department.departmentId);
             int? userid = HttpContext.Session.GetInt32("UserId");
-            int result = manageDepartment.check_Department_Before_update(id, DepartmentName);
-            Department? obj = departmentList.Find(i => i.departmentId == id);
+            int result = manageDepartment.check_Department_Before_update(department);
 
             if (result == 1)
             {
@@ -99,14 +97,15 @@ namespace Hospital_Management_System.Controllers
             }
             else
             {
-                result = manageDepartment.update_Department(id, DepartmentName, DepartmentDescription, IsActive, (int)userid);
+                result = manageDepartment.update_Department(department, (int)userid!);
 
                 if (result == 1)
                 {
                     return RedirectToAction("ManageDepartment");
                 }
                 TempData["error"] = "Error In Department Update";
-                return View(obj);
+                //return View(obj);
+                return RedirectToAction("EditDepartment","Admin",obj);
             }
         }
 
@@ -129,7 +128,7 @@ namespace Hospital_Management_System.Controllers
             SqlDataReader reader = dataBase_Method.Check_Login(email, password);
             if (reader.Read())
             {
-                var UserName = reader["UserName"].ToString();
+                var UserName = reader["UserName"].ToString() ?? "";
                 HttpContext.Session.SetString("username", UserName);
                 HttpContext.Session.SetInt32("UserId", Convert.ToInt32(reader["UserId"]));
                 return View("Dashboard");

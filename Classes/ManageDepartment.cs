@@ -15,9 +15,9 @@ namespace Hospital_Management_System.Classes
             dbHelper = new DBHelper();
         }
 
-        public int Add_Department(string Department, string Description, DateTime Modified, int userid)
+        public int Add_Department(Department department, DateTime Modified, int userid)
         {
-            int result = check_Department(Department);
+            int result = check_Department(department.DepartmentName);
             if (result > 0)
             {
                 return 2;
@@ -26,8 +26,8 @@ namespace Hospital_Management_System.Classes
             {
                 SqlParameter[] peramater = new SqlParameter[]
                 {
-                new SqlParameter("@DepartName", Department),
-                new SqlParameter("@description", Description),
+                new SqlParameter("@DepartName", department.DepartmentName),
+                new SqlParameter("@description", department.DepartmentDescription),
                 new SqlParameter("@Modified", Modified),
                 new SqlParameter("@UserId", userid)
                 };
@@ -89,12 +89,12 @@ namespace Hospital_Management_System.Classes
             {
                 department = new Department();
                 department.departmentId = Convert.ToInt32(reader["DepartmentId"]);
-                department.DepartmentName = reader["DepartmentName"].ToString();
-                department.DepartmentDescription = reader["Description"].ToString();
+                department.DepartmentName = reader["DepartmentName"].ToString() ?? "";
+                department.DepartmentDescription = reader["Description"].ToString() ?? "";
                 department.IsActive = Convert.ToInt32(reader["IsActive"]);
                 department.Created = Convert.ToDateTime(reader["Created"]);
                 department.Modified = Convert.ToDateTime(reader["Modified"]);
-                department.userName = reader["UserName"].ToString();
+                department.userName = reader["UserName"].ToString()??"";
                 AdminController.departmentList.Add(department);
             }
 
@@ -112,12 +112,12 @@ namespace Hospital_Management_System.Classes
             return result;
         }
 
-        public int check_Department_Before_update(int id, string name)
+        public int check_Department_Before_update(Department department)
         {
             SqlParameter[] parameter = new SqlParameter[]
             {
-                new SqlParameter("@DepartmentId",id),
-                new SqlParameter("@DepartmentName",name)
+                new SqlParameter("@DepartmentId",department.departmentId),
+                new SqlParameter("@DepartmentName",department.DepartmentName)
             };
 
             SqlDataReader reader = dbHelper.ExecuteReader("SP_Check_Department_Before_Update", parameter);
@@ -131,14 +131,14 @@ namespace Hospital_Management_System.Classes
             return 0;
         }
 
-        public int update_Department(int id, string deptname, string description, int isActive, int userid)
+        public int update_Department(Department department, int userid)
         {
             SqlParameter[] parameter = new SqlParameter[]
             {
-                new SqlParameter("@DepartmentId",id),
-                new SqlParameter("@DepartmentName",deptname),
-                new SqlParameter("@Description",description),
-                new SqlParameter("@IsActive",isActive),
+                new SqlParameter("@DepartmentId",department.departmentId),
+                new SqlParameter("@DepartmentName",department.DepartmentName),
+                new SqlParameter("@Description",department.DepartmentDescription),
+                new SqlParameter("@IsActive",department.IsActive),
                 new SqlParameter("@UserId",userid)
             };
 

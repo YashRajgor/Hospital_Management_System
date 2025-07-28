@@ -52,27 +52,38 @@ namespace Hospital_Management_System.Controllers
 
         public IActionResult EditUser(int userId)
         {
-            User obj = userList.Find(u => u.UserId == userId);
+            User? obj = userList.Find(u => u.UserId == userId);
 
             if (obj == null)
             {
                 return RedirectToAction("selectAllUser", "User");
             }
-
             return View(obj);
         }
 
         [HttpPost]
         public IActionResult EditUser(User user)
         {
-            int result=manageUser.checkUserBeforeUpdate(user);
+            User? obj = userList.Find(u => u.UserId == user.UserId);
+            int result = manageUser.checkUserBeforeUpdate(user);
 
-            if(result<1)
+            if (result == 0)
             {
+                result = manageUser.updateUser(user);
 
+                if (result > 0)
+                {
+                    return RedirectToAction("selectAllUser", "User");
+                }
+                else
+                {
+                    TempData["UserEditMessage"] = "Error";
+                    return View(obj);
+                }
             }
 
-            return View();
+            TempData["UserEditMessage"] = "Exists";
+            return RedirectToAction("EditUSer","User",obj);
         }
     }
 }

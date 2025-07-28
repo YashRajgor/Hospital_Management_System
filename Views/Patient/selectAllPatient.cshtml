@@ -139,23 +139,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var doc in Model)
+                        @foreach (var patient in Model)
                         {
                             <tr>
                                 @* <button id="btn">click</button> *@
-                                <td>@doc.PatientName</td>
-                                <input type="hidden" id="patientid" value="@doc.patientId" />
+                                <td>@patient.PatientName</td>
+                                <input type="hidden" id="patientid" value="@patient.patientId" />
 
-                                <td>@doc.dateOfBirth</td>
+                                <td>@patient.dateOfBirth</td>
                                 @* <td>@doc.patientId</td> *@
-                                <td>@doc.gender</td>
-                                <td>@doc.email</td>
-                                <td>@doc.phoneNumber</td>
-                                <td>@doc.address</td>
-                                <td>@doc.city</td>
-                                <td>@doc.state</td>
+                                <td>@patient.gender</td>
+                                <td>@patient.email</td>
+                                <td>@patient.phoneNumber</td>
+                                <td>@patient.address</td>
+                                <td>@patient.city</td>
+                                <td>@patient.state</td>
                                 <td>
-                                    @if (doc.isActive == 1)
+                                    @if (patient.isActive == 1)
                                     {
                                         <span class="badge-active">Active</span>
                                     }
@@ -164,14 +164,14 @@
                                         <span class="badge-inactive">Inactive</span>
                                     }
                                 </td>
-                                <td>@doc.created.ToString("dd-MM-yyyy")</td>
-                                <td>@doc.modified.ToString("dd-MM-yyyy")</td>
-                                <td>@doc.userName</td>
+                                <td>@patient.created.ToString("dd-MM-yyyy")</td>
+                                <td>@patient.modified.ToString("dd-MM-yyyy")</td>
+                                <td>@patient.userName</td>
                                 <td>
-                                    <a asp-controller="Patient" asp-action="editPatient" asp-route-patientId="@doc.patientId" class="action-btn btn-edit" title="Edit">
+                                    <a asp-controller="Patient" asp-action="editPatient" asp-route-patientId="@patient.patientId" class="action-btn btn-edit" title="Edit">
                                         <i class="fas fa-pen-to-square"></i>
                                     </a>
-                                    <a asp-controller="Patient" asp-action="deletePatient" asp-route-patientId="@doc.patientId" class="action-btn btn-delete" title="Delete">
+                                    <a asp-controller="Patient" asp-action="deletePatient" asp-route-patientId="@patient.patientId" class="action-btn btn-delete" title="Delete">
                                         <i class="fas fa-trash-alt"></i>
                                     </a>
                                 </td>
