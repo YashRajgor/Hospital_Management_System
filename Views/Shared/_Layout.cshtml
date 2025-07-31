@@ -177,13 +177,13 @@
                                 <i class="bi bi-calendar-plus"></i> Appointment
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="appointmentDropdown">
-                                <li><a class="dropdown-item" href="#">Schedule Appointment</a></li>
+                                <li><a class="dropdown-item" asp-action="AddAppointment" asp-controller="Appointment">Schedule Appointment</a></li>
                                 <li><a class="dropdown-item" href="#">View Appointments</a></li>
                             </ul>
                         </li>
 
                         <!-- Doctor Department Dropdown -->
-                        <li class="nav-item dropdown">
+                       @*  <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="ddDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-diagram-3"></i> Doctor Department
                             </a>
@@ -191,7 +191,8 @@
                                 <li><a class="dropdown-item" href="#">Assign</a></li>
                                 <li><a class="dropdown-item" href="#">Manage</a></li>
                             </ul>
-                        </li>
+                        </li> *@
+
                     </ul>
                 </div>
             </div>
