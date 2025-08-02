@@ -17,7 +17,7 @@ namespace Hospital_Management_System.Classes
 
         public int Add_Department(Department department, DateTime Modified, int userid)
         {
-            int result = check_Department(department.DepartmentName);
+            int result = check_Department(department.DepartmentName!);
             if (result > 0)
             {
                 return 2;
@@ -82,7 +82,7 @@ namespace Hospital_Management_System.Classes
 
         public List<Department> getAllDepartment()
         {
-            AdminController.departmentList.Clear();
+            DepartmentController.departmentList.Clear();
             SqlDataReader reader = dbHelper.ExecuteReader("SP_Display_Department");
             Department? department = null;
             while (reader.Read())
@@ -95,11 +95,11 @@ namespace Hospital_Management_System.Classes
                 department.Created = Convert.ToDateTime(reader["Created"]);
                 department.Modified = Convert.ToDateTime(reader["Modified"]);
                 department.userName = reader["UserName"].ToString()??"";
-                AdminController.departmentList.Add(department);
+                DepartmentController.departmentList.Add(department);
             }
 
 
-            return AdminController.departmentList;
+            return DepartmentController.departmentList;
         }
 
         public int DeleteDepartment(int id)

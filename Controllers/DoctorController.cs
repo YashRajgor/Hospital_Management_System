@@ -13,27 +13,15 @@ namespace Hospital_Management_System.Controllers
         public static List<Doctor> doctorsList = new List<Doctor>();
         public static List<Department> DepartmentIdList = new List<Department>();
 
-        int? userId = null;
+        int? userId;
 
         public IActionResult addDoctor()
         {
-            userId = HttpContext.Session.GetInt32("UserId");
-
-            if (userId == null)
-            {
-                return RedirectToAction("Login", "Admin");
-            }
-
             ViewBag.DepartmentList = manageDoctor.getDepartmentName();
             return View();
         }
         public IActionResult SelectAllDoctor()
         {
-            userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
-            {
-                return RedirectToAction("Login", "Admin");
-            }
             var datareader = manageDoctor.select_All_Doctor();
             return View(datareader);
         }
@@ -41,14 +29,7 @@ namespace Hospital_Management_System.Controllers
         [HttpPost]
         public IActionResult addDoctor(Doctor doctor, List<string> SelectedDepartments)
         {
-            userId = HttpContext.Session.GetInt32("UserId");
-
-            if (userId == null)
-            {
-                return RedirectToAction("Login", "Admin");
-            }
-
-            int check = manageDoctor.check_Befor_Insert(doctor.doctorName);
+            int check = manageDoctor.check_Befor_Insert(doctor.doctorName!);
 
             if (check > 0)
             {
@@ -56,9 +37,9 @@ namespace Hospital_Management_System.Controllers
             }
             else
             {
-                int result = manageDoctor.addDoctor(doctor, (int)userId);
+                int result = manageDoctor.addDoctor(doctor, (int)userId!);
 
-                int id = manageDoctor.getDoctorId(doctor.doctorName);
+                int id = manageDoctor.getDoctorId(doctor.doctorName!);
 
                 if (id > 0 && SelectedDepartments.Count > 0)
                 {
@@ -134,12 +115,6 @@ namespace Hospital_Management_System.Controllers
             doctorsList.Clear();
             DepartmentIdList.Clear();
 
-            userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
-            {
-                return RedirectToAction("Login", "Admin");
-            }
-
             int? doctorIdFromSession = HttpContext.Session.GetInt32("Id");
             if (doctorIdFromSession == null)
             {
@@ -160,7 +135,7 @@ namespace Hospital_Management_System.Controllers
             ViewBag.SelectedDepartmentId = SelectedDepartments;
 
             // Check for duplicate name
-            int nameCheckResult = manageDoctor.check_Doctor_Before_Update(doctor.doctorId, doctor.doctorName);
+            int nameCheckResult = manageDoctor.check_Doctor_Before_Update(doctor.doctorId, doctor.doctorName!);
             if (nameCheckResult == 1)
             {
                 TempData["UpdateAlert"] = "Exists";
@@ -169,7 +144,7 @@ namespace Hospital_Management_System.Controllers
             }
 
             // Perform update
-            int updateResult = manageDoctor.update_Doctor(doctor, (int)userId);
+            int updateResult = manageDoctor.update_Doctor(doctor, (int)userId!);
             if (updateResult == 1)
             {
                 // Delta/Onion Strategy

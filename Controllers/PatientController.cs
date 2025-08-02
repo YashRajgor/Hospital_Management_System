@@ -18,57 +18,43 @@ namespace Hospital_Management_System.Controllers
         [HttpPost]
         public IActionResult addPatient(Patient patient)
         {
-            userId = HttpContext.Session.GetInt32("UserId");
-
-            if (userId != null)
+            int result = managePatient.checkPatient(patient.PatientName!);
+            if (result == 0)
             {
-                int result = managePatient.checkPatient(patient.PatientName);
-                if (result == 0)
-                {
-                    result = managePatient.addPatient(patient, (int)userId);
+                result = managePatient.addPatient(patient, (int)userId!);
 
-                    if (result > 0)
-                    {
-                        TempData["PatientMessage"] = "Success";
-                    }
-                    else
-                    {
-                        TempData["PatientMessage"] = "Fail";
-                    }
+                if (result > 0)
+                {
+                    TempData["PatientMessage"] = "Success";
                 }
                 else
                 {
-                    TempData["PatientMessage"] = "Exists";
+                    TempData["PatientMessage"] = "Fail";
                 }
-                return View();
             }
-
-            return RedirectToAction("Login", "Admin");
+            else
+            {
+                TempData["PatientMessage"] = "Exists";
+            }
+            return View();
         }
 
         public IActionResult selectAllPatient()
         {
-            userId = HttpContext.Session.GetInt32("UserId");
-
-            if (userId != null)
-            {
-                var readdata = managePatient.select_All_Patient();
-                return View(readdata);
-            }
-
-            return RedirectToAction("Login", "Admin");
+            var readdata = managePatient.select_All_Patient();
+            return View(readdata);
         }
 
         //[Route("/Patient/deletePatient/{patientId?}")]
-        
+
         public IActionResult deletePatient(int patientId)
         {
             int result = managePatient.deletePatient(patientId);
 
-            return RedirectToAction("selectAllPatient");
+            return RedirectToAction("selectAllPatient", "Patient");
         }
 
-        
+
 
         public IActionResult editPatient(int patientId)
         {
@@ -76,7 +62,7 @@ namespace Hospital_Management_System.Controllers
             Patient? patient = Patients.Find(i => i.patientId == patientId);
             if (patient == null)
             {
-                return RedirectToAction("selectAllPatient");
+                return RedirectToAction("selectAllPatient", "Patient");
             }
             return View(patient);
         }
@@ -84,39 +70,29 @@ namespace Hospital_Management_System.Controllers
         [HttpPost]
         public IActionResult editPatient(Patient patient)
         {
-            userId = HttpContext.Session.GetInt32("UserId");
-
-            if (userId != null)
+            int result = managePatient.checkBeforePatientUpdate(patient);
+            Patient? patientsObj = Patients.Find(i => i.patientId == patient.patientId);
+            if (result == 1)
             {
-                int result = managePatient.checkBeforePatientUpdate(patient);
-                Patient? patientsObj = Patients.Find(i => i.patientId == patient.patientId);
-                if (result == 1)
+                TempData["patientUpdate"] = "Exists";
+                if (patientsObj == null)
                 {
-                    TempData["patientUpdate"] = "Exists";
-                    if (patientsObj == null)
-                    {
-                        return RedirectToAction("selectAllPatient");
-                    }
-                    return View(patientsObj);
+                    return RedirectToAction("selectAllPatient", "Patient");
                 }
-                else
-                {
-                    result = managePatient.editPatient(patient, (int)userId);
-
-                    if (result > 0)
-                    {
-                        HttpContext.Session.Remove("patientId");
-                        return RedirectToAction("selectAllPatient");
-                    }
-
-                    TempData["patientUpdate"] = "error";
-                    //return View(patientsObj);
-                    return RedirectToAction("editPatient","Patient", patientsObj);
-                }
+                return View(patientsObj);
             }
             else
             {
-                return RedirectToAction("Login", "Admin");
+                result = managePatient.editPatient(patient, (int)userId!);
+
+                if (result > 0)
+                {
+                    HttpContext.Session.Remove("patientId");
+                    return RedirectToAction("selectAllPatient", "Patient");
+                }
+
+                TempData["patientUpdate"] = "error";
+                return RedirectToAction("editPatient", "Patient", patientsObj);
             }
         }
     }

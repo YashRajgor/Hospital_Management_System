@@ -1,12 +1,13 @@
-using Hospital_Management_System.Classes;
+using Hospital_Management_System.ActionFilter;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSession();
-builder.Services.AddControllersWithViews();
-
-//builder.Services.AddScoped<DBHelper>();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Filters.Add<SessionCheck>(); 
+});
 
 var app = builder.Build();
 
