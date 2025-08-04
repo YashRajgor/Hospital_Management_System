@@ -126,12 +126,17 @@
                                 <td>@userinfo.createdDate</td>
                                 <td>@userinfo.modifiedDate</td>
                                 <td>
-                                    <a asp-controller="User" asp-action="EditUser" asp-route-userId="@userinfo.UserId" class="action-btn btn-edit">
-                                        <i class="fas fa-pen-to-square"></i>
-                                    </a>
-                                    <a asp-controller="User" asp-action="DeleteUser" asp-route-userId="@userinfo.UserId" class="action-btn btn-delete">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
+                                    @{
+                                        if (userinfo.UserId == ViewBag.userId)
+                                        {
+                                            <a asp-controller="User" asp-action="EditUser" asp-route-userId="@userinfo.UserId" class="action-btn btn-edit">
+                                                <i class="fas fa-pen-to-square"></i>
+                                            </a>
+                                            <a asp-controller="User" asp-action="DeleteUser" asp-route-userId="@userinfo.UserId" class="action-btn btn-delete">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </a>
+                                        }
+                                    }
                                 </td>
                             </tr>
                         }

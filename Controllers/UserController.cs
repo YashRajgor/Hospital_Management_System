@@ -8,7 +8,7 @@ namespace Hospital_Management_System.Controllers
     {
         ManageUser manageUser = new ManageUser();
         public static List<User> userList = new List<User>();
-
+        int? userId;
         public IActionResult addUser()
         {
             return View();
@@ -40,6 +40,8 @@ namespace Hospital_Management_System.Controllers
         }
         public IActionResult selectAllUser()
         {
+            userId = HttpContext.Session.GetInt32("UserId");
+            ViewBag.userId=userId;
             var userList = manageUser.getUserList();
             return View(userList);
         }

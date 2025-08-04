@@ -1,4 +1,5 @@
-﻿using Hospital_Management_System.Models;
+﻿using Hospital_Management_System.Controllers;
+using Hospital_Management_System.Models;
 using Microsoft.Data.SqlClient;
 
 namespace Hospital_Management_System.Classes
@@ -15,13 +16,21 @@ namespace Hospital_Management_System.Classes
             dbHelper = new DBHelper();
         }
 
-        //public int addAppointment(Appointment appointment)
-        //{
-        //    SqlParameter[] parameter = new SqlParameter[]
-        //    {
-        //        new SqlParameter()
-        //    };
-        //}
+        public int addAppointment(Appointment appointment, int userId)
+        {
+            SqlParameter[] parameter = new SqlParameter[]
+            {
+                new SqlParameter("@departmentId",appointment.DepartmentId),
+                new SqlParameter("@doctorId",appointment.DoctorId),
+                new SqlParameter("@patientId",appointment.PatientId),
+                new SqlParameter("@appointmentDate",appointment.AppointmentDate),
+                new SqlParameter("@description",appointment.Description),
+                new SqlParameter("@specialRemark",appointment.SpecialRemarks),
+                new SqlParameter("@userId",userId)
+            };
+
+            return dbHelper.ExecuteNonQuery("SP_Add_Appointment", parameter);
+        }
 
         public List<Patient> getPatientName()
         {
@@ -82,6 +91,38 @@ namespace Hospital_Management_System.Classes
 
             reader.Close();
             return doctortList;
+        }
+
+        public List<Appointment> selectAllAppointment()
+        {
+            AppointmentController.appointments.Clear();
+
+            SqlDataReader reader = dbHelper.ExecuteReader("SP_Select_All_Appointment");
+
+            Appointment? appointment;
+
+            while (reader.Read())
+            {
+                appointment = new Appointment();
+                appointment.AppointmentId = Convert.ToInt32(reader["AppointmentId"]);
+                appointment.DepartmentId = Convert.ToInt32(reader["DepartmentId"]);
+                appointment.DepartmentName = reader["DepartmentName"].ToString();
+                appointment.DoctorId = Convert.ToInt32(reader["DoctorId"]);
+                appointment.DoctorName = reader["Name"].ToString();
+                appointment.PatientId = Convert.ToInt32(reader["PatientId"]);
+                appointment.PatientName = reader["Name"].ToString();
+                appointment.AppointmentDate = Convert.ToDateTime(reader["AppointmentDate"]);
+                appointment.AppointmentStatus = reader["AppointmentStatus"].ToString();
+                appointment.Description = reader["Description"].ToString();
+                appointment.SpecialRemarks = reader["SpecialRemarks"].ToString();
+                appointment.Created = Convert.ToDateTime(reader["Created"]);
+                appointment.Modified = Convert.ToDateTime(reader["Modified"]);
+                appointment.userName = reader["UserName"].ToString();
+                appointment.TotalConsultedAmount = Convert.ToDecimal(reader["TotalConsultedAmount"]);
+            }
+
+            reader.Close();
+            return AppointmentController.appointments;
         }
     }
 }

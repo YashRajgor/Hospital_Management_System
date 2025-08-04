@@ -6,7 +6,9 @@ namespace Hospital_Management_System.Controllers
 {
     public class AppointmentController : Controller
     {
+        public static List<Appointment> appointments = new List<Appointment>();
         ManageAppointment manageAppointment = new ManageAppointment();
+        int? userId;
         public IActionResult AddAppointment()
         {
             ViewBag.PatientList = manageAppointment.getPatientName();
@@ -31,7 +33,27 @@ namespace Hospital_Management_System.Controllers
         [HttpPost]
         public IActionResult AddAppointment(Appointment appointment)
         {
+            userId = HttpContext.Session.GetInt32("UserId");
+            int result = manageAppointment.addAppointment(appointment, (int)userId!);
+
+            if (result > 0)
+            {
+                TempData["AppointmentMessage"] = "Success";
+            }
+            else
+            {
+                TempData["AppointmentMessage"] = "Fail";
+            }
+
+            ViewBag.PatientList = manageAppointment.getPatientName();
+            ViewBag.DepartmentList = manageAppointment.getDepartmentList();
             return View();
+        }
+
+        public IActionResult selectAllAppointment()
+        {
+            var appointmentData = manageAppointment.selectAllAppointment();
+            return View(appointmentData);
         }
     }
 }

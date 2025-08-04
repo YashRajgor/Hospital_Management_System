@@ -104,7 +104,7 @@
 
         <!-- Right Panel -->
         <div class="right-panel">
-            <form method="post" asp-action="CreateAppointment" asp-controller="Appointment">
+            <form method="post" asp-action="AddAppointment" asp-controller="Appointment">
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Appointment Date & Time</label>
@@ -157,6 +157,22 @@
 
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+                <br />
+                <!-- Alert Messages -->
+                <div>
+                    @if (TempData["AppointmentMessage"] == "Exists")
+                    {
+                        <div class="alert alert-warning">Appointment already exists.</div>
+                    }
+                    else if (TempData["AppointmentMessage"] == "Success")
+                    {
+                        <div class="alert alert-success">Appointment add successfully.</div>
+                    }
+                    else if (TempData["AppointmentMessage"] == "Fail")
+                    {
+                        <div class="alert alert-danger">Appointment not inserted.</div>
+                    }
                 </div>
             </form>
         </div>

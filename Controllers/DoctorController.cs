@@ -147,8 +147,6 @@ namespace Hospital_Management_System.Controllers
             int updateResult = manageDoctor.update_Doctor(doctor, (int)userId!);
             if (updateResult == 1)
             {
-                // Delta/Onion Strategy
-
                 // Get departments to ADD
                 var toAdd = SelectedDepartments.Except(previousDepartmentIds).ToList();
 
