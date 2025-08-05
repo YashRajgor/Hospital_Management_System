@@ -55,5 +55,18 @@ namespace Hospital_Management_System.Controllers
             var appointmentData = manageAppointment.selectAllAppointment();
             return View(appointmentData);
         }
+
+        public IActionResult EditAppointment(int appointmentId)
+        {
+            Appointment? appointment = appointments.Find(A => A.AppointmentId == appointmentId);
+            if (appointment == null)
+            {
+                return RedirectToAction("selectAllAppointment", "Appointment");
+            }
+            ViewBag.PatientList = manageAppointment.getPatientName();
+            ViewBag.DepartmentList = manageAppointment.getDepartmentList();
+            return View(appointment);
+        }
+
     }
 }

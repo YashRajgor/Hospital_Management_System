@@ -118,7 +118,9 @@ namespace Hospital_Management_System.Classes
                 appointment.Created = Convert.ToDateTime(reader["Created"]);
                 appointment.Modified = Convert.ToDateTime(reader["Modified"]);
                 appointment.userName = reader["UserName"].ToString();
-                appointment.TotalConsultedAmount = Convert.ToDecimal(reader["TotalConsultedAmount"]);
+                appointment.TotalConsultedAmount = reader["TotalConsultedAmount"] != DBNull.Value
+                ? Convert.ToDouble(reader["TotalConsultedAmount"]) : 0.0;
+                AppointmentController.appointments.Add(appointment);
             }
 
             reader.Close();

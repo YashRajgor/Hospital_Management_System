@@ -1,0 +1,229 @@
+﻿@model Hospital_Management_System.Models.Appointment
+
+@{
+    ViewBag.Title = "Edit Appointment";
+    <partial name="_ValidationScriptsPartial" />
+    Layout = null;
+}
+
+<!-- Bootstrap CDN -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<style>
+    body {
+        background-color: #f4f7fe;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .appointment-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+        min-height: 100vh;
+    }
+
+    .appointment-card {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 5px 25px rgba(0, 0, 0, 0.08);
+        display: flex;
+        max-width: 1000px;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .left-panel {
+        background: linear-gradient(135deg, #1e88e5, #42a5f5);
+        color: white;
+        padding: 40px 30px;
+        width: 35%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .left-panel img {
+            width: 100px;
+            margin-bottom: 20px;
+        }
+
+        .left-panel h4 {
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .left-panel p {
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+    .right-panel {
+        padding: 40px;
+        width: 65%;
+    }
+
+    .form-label {
+        font-weight: 500;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #1e88e5;
+        box-shadow: 0 0 0 0.2rem rgba(30, 136, 229, 0.2);
+    }
+
+    .btn-primary {
+        background-color: #1e88e5;
+        border: none;
+        font-weight: 500;
+    }
+
+        .btn-primary:hover {
+            background-color: #1565c0;
+        }
+
+    @@media (max-width: 768px) {
+        .appointment-card {
+            flex-direction: column;
+        }
+
+        .left-panel, .right-panel {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="appointment-wrapper">
+    <div class="appointment-card">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <img src="https://cdn-icons-png.flaticon.com/512/2921/2921222.png" alt="Appointment Icon" />
+            <h4>Edit Appointment</h4>
+            <p>Modify appointment details and save changes.</p>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <form method="post" asp-action="EditAppointment" asp-controller="Appointment">
+                @* Hidden field to keep track of ID *@
+                <input type="hidden" asp-for="AppointmentId" />
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Appointment Date & Time</label>
+                        <input asp-for="AppointmentDate" type="datetime-local" class="form-control" value="@Model.AppointmentDate.ToString("yyyy-MM-ddTHH:mm")" />
+                        <span asp-validation-for="AppointmentDate" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Patient</label>
+                        <select asp-for="PatientId" class="form-select">
+                            <option disabled>-- Select Patient --</option>
+                            @foreach (var patient in ViewBag.PatientList)
+                            {
+                                var isSelected = Model.PatientId == patient.patientId ? "selected" : "";
+                                <option value="@patient.patientId" selected="@isSelected">
+                                    @patient.PatientName
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="PatientId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Department</label>
+                        <select asp-for="DepartmentId" class="form-select" id="DepartmentId">
+                            <option disabled>-- Select Department --</option>
+                            @foreach (var dept in ViewBag.DepartmentList)
+                            {
+                                var isSelected = Model.DepartmentId == dept.departmentId ? "selected" : "";
+                                <option value = "@dept.departmentId" selected = "@isSelected" >
+                                    @dept.DepartmentName
+                                </option>
+                            }
+                        </select>
+                        <span asp-validation-for="DepartmentId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Doctor</label>
+                        <select asp-for="DoctorId" class="form-select" id="doctorDropdownLocal">
+                            <option disabled>-- Select Doctor --</option>
+                            @if (ViewBag.DoctorList != null)
+                            {
+                                foreach (var doc in ViewBag.DoctorList)
+                                {
+                                    var isSelected = Model.DoctorId == doc.doctorId ? "selected" : "";
+                                    <option value="@doc.doctorId" selected="@isSelected">
+                                        @doc.doctorName
+                                    </option>
+                                }
+                            }
+                        </select>
+                        <span asp-validation-for="DoctorId" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Description</label>
+                        <textarea asp-for="Description" class="form-control" placeholder="Enter description..."></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Special Remarks</label>
+                        <textarea asp-for="SpecialRemarks" class="form-control" placeholder="Enter special remarks..."></textarea>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Update Appointment</button>
+                </div>
+                <br />
+                <!-- Alert Messages -->
+                <div>
+                    @if (TempData["AppointmentMessage"] == "Exists")
+                    {
+                        <div class="alert alert-warning">Appointment already exists.</div>
+                    }
+                    else if (TempData["AppointmentMessage"] == "Success")
+                    {
+                        <div class="alert alert-success">Appointment updated successfully.</div>
+                    }
+                    else if (TempData["AppointmentMessage"] == "Fail")
+                    {
+                        <div class="alert alert-danger">Failed to update appointment.</div>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery + AJAX for cascading doctor dropdown -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#DepartmentId').on('change', function () {
+            var departmentId = $(this).val();
+            if (departmentId) {
+                $.ajax({
+                    url: '/Appointment/GetDoctorsByDepartment',
+                    type: 'GET',
+                    data: { departmentId: departmentId },
+                    success: function (data) {
+                        var doctorDropdown = $('#doctorDropdownLocal');
+                        doctorDropdown.empty();
+                        doctorDropdown.append('<option disabled selected>-- Select Doctor --</option>');
+                        $.each(data, function (index, doctor) {
+                            doctorDropdown.append('<option value="' + doctor.doctorId + '">' + doctor.doctorName + '</option>');
+                        });
+                    },
+                    error: function () {
+                        alert('Error loading doctors.');
+                    }
+                });
+            }
+        });
+    });
+</script>

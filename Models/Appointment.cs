@@ -13,7 +13,7 @@
         public string? AppointmentStatus { get; set; }
         public string? Description { get; set; }
         public string? SpecialRemarks { get; set; }
-        public decimal TotalConsultedAmount { get; set; }
+        public double TotalConsultedAmount { get; set; }
         public DateTime? Created { get; set; }
         public DateTime? Modified { get;set; }
         public string? userName {  get; set; }

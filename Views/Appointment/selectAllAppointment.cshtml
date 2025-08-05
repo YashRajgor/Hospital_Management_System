@@ -79,6 +79,35 @@
             transform: scale(1.05);
         }
 
+    .custom-badge {
+        padding: 6px 12px;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 20px;
+        display: inline-block;
+        color: white;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .badge-pending {
+        background: #f7c948; /* soft yellow */
+        color: #000;
+    }
+
+    .badge-process {
+        background: #3b82f6; /* soft blue */
+    }
+
+    .badge-complete {
+        background: #10b981; /* soft green */
+    }
+
+    .custom-badge:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
     @@keyframes fadeIn {
         from {
             opacity: 0;
@@ -110,7 +139,7 @@
 <div class="container mt-5">
     <div class="card">
         <div class="card-header">
-            <i class="fas fa-user-md me-2"></i>Doctor List
+            <i class="fas fa-calendar-check me-2"></i>Appoinment List
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -139,30 +168,34 @@
                                 <td>@app.DepartmentName</td>
                                 <td>@app.DoctorName</td>
                                 <td>@app.AppointmentDate</td>
-                                <td>@app.AppointmentStatus</td>
+                                <td>
+                                    @if (app.AppointmentStatus == "pending")
+                                    {
+                                        <span class="custom-badge badge-pending">Pending</span>
+                                    }
+                                    else if (app.AppointmentStatus == "process")
+                                    {
+                                        <span class="custom-badge badge-process">In Process</span>
+                                    }
+                                    else if (app.AppointmentStatus == "complete")
+                                    {
+                                        <span class="custom-badge badge-complete">Completed</span>
+                                    }
+
+                                </td>
                                 <td>@app.Description</td>
                                 <td>@app.SpecialRemarks</td>
-                                @* <td>
-                                    @if (doc.isActive == 1)
-                                    {
-                                        <span class="badge-active">Active</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge-inactive">Inactive</span>
-                                    }
-                                </td> *@
                                 <td>@app.Created</td>
                                 <td>@app.Modified</td>
                                 <td>@app.userName</td>
                                 <td>@app.TotalConsultedAmount</td>
                                 <td>
-                                    <a asp-controller="Doctor" asp-action="editDoctor" asp-route-doctorId="@doc.doctorId" class="action-btn btn-edit" title="Edit">
+                                    <a asp-controller="Appointment" asp-action="EditAppointment" asp-route-appointmentId="@app.AppointmentId" class="action-btn btn-edit" title="Edit">
                                         <i class="fas fa-pen-to-square"></i>
                                     </a>
-                                    <a asp-controller="Doctor" asp-action="deleteDoctor" asp-route-doctorId="@doc.doctorId" class="action-btn btn-delete" title="Delete">
+                                    @* <a asp-controller="Doctor" asp-action="deleteDoctor" asp-route-appointmentId="@app.AppointmentId" class="action-btn btn-delete" title="Delete"> 
                                         <i class="fas fa-trash-alt"></i>
-                                    </a>
+                                    </a> *@
                                 </td>
                             </tr>
                         }
