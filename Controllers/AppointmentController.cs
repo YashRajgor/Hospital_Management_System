@@ -7,6 +7,7 @@ namespace Hospital_Management_System.Controllers
     public class AppointmentController : Controller
     {
         public static List<Appointment> appointments = new List<Appointment>();
+        List<string> status = new List<string> { "pending", "process", "complete" };
         ManageAppointment manageAppointment = new ManageAppointment();
         int? userId;
         public IActionResult AddAppointment()
@@ -58,15 +59,18 @@ namespace Hospital_Management_System.Controllers
 
         public IActionResult EditAppointment(int appointmentId)
         {
-            Appointment? appointment = appointments.Find(A => A.AppointmentId == appointmentId);
+            Appointment? appointment = appointments.Find(a => a.AppointmentId == appointmentId);
             if (appointment == null)
             {
                 return RedirectToAction("selectAllAppointment", "Appointment");
             }
+
             ViewBag.PatientList = manageAppointment.getPatientName();
             ViewBag.DepartmentList = manageAppointment.getDepartmentList();
+            ViewBag.DoctorList = manageAppointment.getDoctorByDepartment(appointment.DepartmentId);
+
+            ViewBag.StatusList = status;
             return View(appointment);
         }
-
     }
 }

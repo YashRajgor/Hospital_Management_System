@@ -108,9 +108,9 @@ namespace Hospital_Management_System.Classes
                 appointment.DepartmentId = Convert.ToInt32(reader["DepartmentId"]);
                 appointment.DepartmentName = reader["DepartmentName"].ToString();
                 appointment.DoctorId = Convert.ToInt32(reader["DoctorId"]);
-                appointment.DoctorName = reader["Name"].ToString();
+                appointment.DoctorName = reader["DoctorName"].ToString();
                 appointment.PatientId = Convert.ToInt32(reader["PatientId"]);
-                appointment.PatientName = reader["Name"].ToString();
+                appointment.PatientName = reader["PatientName"].ToString();
                 appointment.AppointmentDate = Convert.ToDateTime(reader["AppointmentDate"]);
                 appointment.AppointmentStatus = reader["AppointmentStatus"].ToString();
                 appointment.Description = reader["Description"].ToString();

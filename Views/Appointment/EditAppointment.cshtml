@@ -112,20 +112,15 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Appointment Date & Time</label>
-                        <input asp-for="AppointmentDate" type="datetime-local" class="form-control" value="@Model.AppointmentDate.ToString("yyyy-MM-ddTHH:mm")" />
+                        <input asp-for="AppointmentDate" type="datetime-local" class="form-control"
+                               value="@Model.AppointmentDate.ToString("yyyy-MM-ddTHH:mm")" />
                         <span asp-validation-for="AppointmentDate" class="text-danger"></span>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Patient</label>
-                        <select asp-for="PatientId" class="form-select">
-                            <option disabled>-- Select Patient --</option>
-                            @foreach (var patient in ViewBag.PatientList)
-                            {
-                                var isSelected = Model.PatientId == patient.patientId ? "selected" : "";
-                                <option value="@patient.patientId" selected="@isSelected">
-                                    @patient.PatientName
-                                </option>
-                            }
+                        <select asp-for="PatientId" class="form-select"
+                                asp-items="@(new SelectList(ViewBag.PatientList, "patientId", "PatientName", Model.PatientId))">
+                            <option value="">-- Select Patient --</option>
                         </select>
                         <span asp-validation-for="PatientId" class="text-danger"></span>
                     </div>
@@ -134,32 +129,17 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Department</label>
-                        <select asp-for="DepartmentId" class="form-select" id="DepartmentId">
-                            <option disabled>-- Select Department --</option>
-                            @foreach (var dept in ViewBag.DepartmentList)
-                            {
-                                var isSelected = Model.DepartmentId == dept.departmentId ? "selected" : "";
-                                <option value = "@dept.departmentId" selected = "@isSelected" >
-                                    @dept.DepartmentName
-                                </option>
-                            }
+                        <select asp-for="DepartmentId" class="form-select" id="DepartmentId"
+                                asp-items="@(new SelectList(ViewBag.DepartmentList, "departmentId", "DepartmentName", Model.DepartmentId))">
+                            <option value="">-- Select Department --</option>
                         </select>
                         <span asp-validation-for="DepartmentId" class="text-danger"></span>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Doctor</label>
-                        <select asp-for="DoctorId" class="form-select" id="doctorDropdownLocal">
-                            <option disabled>-- Select Doctor --</option>
-                            @if (ViewBag.DoctorList != null)
-                            {
-                                foreach (var doc in ViewBag.DoctorList)
-                                {
-                                    var isSelected = Model.DoctorId == doc.doctorId ? "selected" : "";
-                                    <option value="@doc.doctorId" selected="@isSelected">
-                                        @doc.doctorName
-                                    </option>
-                                }
-                            }
+                        <select asp-for="DoctorId" class="form-select" id="doctorDropdownLocal"
+                                asp-items="@(new SelectList(ViewBag.DoctorList ?? new List<dynamic>(), "doctorId", "doctorName", Model.DoctorId))">
+                            <option value="">-- Select Doctor --</option>
                         </select>
                         <span asp-validation-for="DoctorId" class="text-danger"></span>
                     </div>
@@ -173,6 +153,25 @@
                     <div class="col-md-6">
                         <label class="form-label">Special Remarks</label>
                         <textarea asp-for="SpecialRemarks" class="form-control" placeholder="Enter special remarks..."></textarea>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">Appointment Status</label>
+                        <select asp-for="AppointmentStatus" class="form-select"
+                                asp-items="@(new SelectList(ViewBag.StatusList, Model.AppointmentStatus))">
+                            <option value="">-- Select Status --</option>
+                        </select>
+                        <span asp-validation-for="AppointmentStatus" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row mb-3" id="amountRow" style="display:none;">
+                    <div class="col-md-6">
+                        <label class="form-label">Amount</label>
+                        <input asp-for="TotalConsultedAmount" class="form-control" id="Amount" />
+                        <span asp-validation-for="TotalConsultedAmount" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -214,7 +213,7 @@
                     success: function (data) {
                         var doctorDropdown = $('#doctorDropdownLocal');
                         doctorDropdown.empty();
-                        doctorDropdown.append('<option disabled selected>-- Select Doctor --</option>');
+                        doctorDropdown.append('<option value="">-- Select Doctor --</option>');
                         $.each(data, function (index, doctor) {
                             doctorDropdown.append('<option value="' + doctor.doctorId + '">' + doctor.doctorName + '</option>');
                         });
@@ -224,6 +223,28 @@
                     }
                 });
             }
+        });
+    });
+
+    $(document).ready(function () {
+        function toggleAmountField() {
+            var status = $('#AppointmentStatus').val();
+            if (status === "complete") {
+                $('#amountRow').show();
+                $('#Amount').attr("required", "required"); // make required
+            } else {
+                $('#amountRow').hide();
+                $('#Amount').removeAttr("required"); // not required
+                $('#Amount').val(""); // clear value
+            }
+        }
+
+        // Run on page load
+        toggleAmountField();
+
+        // Run when status changes
+        $('#AppointmentStatus').on('change', function () {
+            toggleAmountField();
         });
     });
 </script>
