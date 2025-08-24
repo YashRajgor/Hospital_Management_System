@@ -124,5 +124,10 @@ namespace Hospital_Management_System.Controllers
 
             return View(appointment);
         }
+        public IActionResult DeleteAppointment(int appointmentId)
+        {
+            int result=manageAppointment.deleteAppointment(appointmentId);
+            return RedirectToAction("selectAllAppointment");
+        }
     }
 }

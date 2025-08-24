@@ -1,5 +1,6 @@
 ﻿using Hospital_Management_System.Classes;
 using Hospital_Management_System.Models;
+using Hospital_Management_System.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital_Management_System.Controllers
@@ -7,6 +8,8 @@ namespace Hospital_Management_System.Controllers
     public class UserController : Controller
     {
         ManageUser manageUser = new ManageUser();
+        MailService services = new MailService();
+
         public static List<User> userList = new List<User>();
         int? userId;
         public IActionResult addUser()
@@ -18,6 +21,8 @@ namespace Hospital_Management_System.Controllers
         public IActionResult addUser(User user)
         {
             int result = manageUser.checkUserExitsOrNot(user);
+            
+            string randomPassword = services.generatePassword();
 
             if (result < 1)
             {

@@ -144,5 +144,15 @@ namespace Hospital_Management_System.Classes
 
             return dbHelper.ExecuteNonQuery("SP_Edit_Appointment",parameter);
         }
+
+        public int deleteAppointment(int appointmentId)
+        {
+            SqlParameter[] parameter = new SqlParameter[]
+            {
+                new SqlParameter("@AppointmentId",appointmentId)
+            };
+
+            return dbHelper.ExecuteNonQuery("SP_Delete_Appointment", parameter);
+        }
     }
 }
