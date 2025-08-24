@@ -159,17 +159,16 @@
                     <button type="submit" class="btn btn-primary">Save</button>
                 </div>
                 <br />
-                <!-- Alert Messages -->
                 <div>
-                    @if (TempData["AppointmentMessage"] == "Exists")
+                    @if (TempData["AppointmentMessage"]?.ToString() == "Exists")
                     {
-                        <div class="alert alert-warning">Appointment already exists.</div>
+                        <div class="alert alert-warning">An appointment with this Doctor, Department, and Time already exists!</div>
                     }
-                    else if (TempData["AppointmentMessage"] == "Success")
+                    else if (TempData["AppointmentMessage"]?.ToString() == "Success")
                     {
                         <div class="alert alert-success">Appointment add successfully.</div>
                     }
-                    else if (TempData["AppointmentMessage"] == "Fail")
+                    else if (TempData["AppointmentMessage"]?.ToString() == "Fail")
                     {
                         <div class="alert alert-danger">Appointment not inserted.</div>
                     }

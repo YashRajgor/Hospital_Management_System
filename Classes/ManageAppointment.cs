@@ -126,5 +126,23 @@ namespace Hospital_Management_System.Classes
             reader.Close();
             return AppointmentController.appointments;
         }
+
+        public int updateAppointment(Appointment appointment,int userId)
+        {
+            SqlParameter[] parameter = new SqlParameter[]
+            {
+                new SqlParameter("@AppointmentId",appointment.AppointmentId),
+                new SqlParameter("@DepartmentId",appointment.DepartmentId),
+                new SqlParameter("@DoctorId",appointment.DoctorId),
+                new SqlParameter("@AppointmentDate",appointment.AppointmentDate),
+                new SqlParameter("@AppointmentStatus",appointment.AppointmentStatus),
+                new SqlParameter("@Description",appointment.Description),
+                new SqlParameter("@SpecialRemarks",appointment.SpecialRemarks),
+                new SqlParameter("@userId",userId),
+                new SqlParameter("@Amount",appointment.TotalConsultedAmount)
+            };
+
+            return dbHelper.ExecuteNonQuery("SP_Edit_Appointment",parameter);
+        }
     }
 }

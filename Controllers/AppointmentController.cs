@@ -35,19 +35,34 @@ namespace Hospital_Management_System.Controllers
         public IActionResult AddAppointment(Appointment appointment)
         {
             userId = HttpContext.Session.GetInt32("UserId");
-            int result = manageAppointment.addAppointment(appointment, (int)userId!);
 
-            if (result > 0)
+            bool exists = appointments.Any(a =>
+                a.DoctorId == appointment.DoctorId &&
+                a.DepartmentId == appointment.DepartmentId &&
+                a.AppointmentDate == appointment.AppointmentDate);
+
+            if (exists)
             {
-                TempData["AppointmentMessage"] = "Success";
+                TempData["AppointmentMessage"] = "Exists";
             }
             else
             {
-                TempData["AppointmentMessage"] = "Fail";
+                int result = manageAppointment.addAppointment(appointment, (int)userId!);
+
+                if (result > 0)
+                {
+                    appointments.Add(appointment);
+                    TempData["AppointmentMessage"] = "Success";
+                }
+                else
+                {
+                    TempData["AppointmentMessage"] = "Fail";
+                }
             }
 
             ViewBag.PatientList = manageAppointment.getPatientName();
             ViewBag.DepartmentList = manageAppointment.getDepartmentList();
+
             return View();
         }
 
@@ -70,6 +85,43 @@ namespace Hospital_Management_System.Controllers
             ViewBag.DoctorList = manageAppointment.getDoctorByDepartment(appointment.DepartmentId);
 
             ViewBag.StatusList = status;
+            return View(appointment);
+        }
+
+        [HttpPost]
+        public IActionResult EditAppointment(Appointment appointment)
+        {
+            userId = HttpContext.Session.GetInt32("UserId");
+
+            bool exists = appointments.Any(a =>
+               a.DoctorId == appointment.DoctorId &&
+               a.DepartmentId == appointment.DepartmentId &&
+               a.AppointmentDate == appointment.AppointmentDate &&
+               a.AppointmentId!=appointment.AppointmentId);
+
+            if (exists)
+            {
+                TempData["AppointmentMessage"] = "Exists";
+            }
+            else
+            {
+                int result = manageAppointment.updateAppointment(appointment, (int)userId!);
+
+                if(result>0)
+                {
+                    return RedirectToAction("selectAllAppointment");
+                }
+                else
+                {
+                    TempData["AppointmentMessage"] = "Fail";
+                }
+            }
+
+            ViewBag.PatientList = manageAppointment.getPatientName();
+            ViewBag.DepartmentList = manageAppointment.getDepartmentList();
+            ViewBag.DoctorList = manageAppointment.getDoctorByDepartment(appointment.DepartmentId);
+            ViewBag.StatusList = status;
+
             return View(appointment);
         }
     }

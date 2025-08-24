@@ -116,14 +116,14 @@
                                value="@Model.AppointmentDate.ToString("yyyy-MM-ddTHH:mm")" />
                         <span asp-validation-for="AppointmentDate" class="text-danger"></span>
                     </div>
-                    <div class="col-md-6">
+                   @*  <div class="col-md-6">
                         <label class="form-label">Patient</label>
                         <select asp-for="PatientId" class="form-select"
                                 asp-items="@(new SelectList(ViewBag.PatientList, "patientId", "PatientName", Model.PatientId))">
                             <option value="">-- Select Patient --</option>
                         </select>
                         <span asp-validation-for="PatientId" class="text-danger"></span>
-                    </div>
+                    </div> *@
                 </div>
 
                 <div class="row mb-3">
@@ -181,15 +181,15 @@
                 <br />
                 <!-- Alert Messages -->
                 <div>
-                    @if (TempData["AppointmentMessage"] == "Exists")
+                    @if (TempData["AppointmentMessage"]?.ToString() == "Exists")
                     {
-                        <div class="alert alert-warning">Appointment already exists.</div>
+                        <div class="alert alert-warning">An appointment with this Doctor, Department, and Time already exists!</div>
                     }
-                    else if (TempData["AppointmentMessage"] == "Success")
+                    else if (TempData["AppointmentMessage"]?.ToString() == "Success")
                     {
                         <div class="alert alert-success">Appointment updated successfully.</div>
                     }
-                    else if (TempData["AppointmentMessage"] == "Fail")
+                    else if (TempData["AppointmentMessage"]?.ToString() == "Fail")
                     {
                         <div class="alert alert-danger">Failed to update appointment.</div>
                     }
