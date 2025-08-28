@@ -1,4 +1,7 @@
-﻿namespace Hospital_Management_System.Services
+﻿using System.Net;
+using System.Net.Mail;
+
+namespace Hospital_Management_System.Services
 {
     public class MailService
     {
@@ -16,7 +19,31 @@
             return new string(password);
         }
 
+        public bool SendMail(string toEmail, string subject, string body)
+        {
+            try
+            {
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587)  
+                {
+                    Credentials = new NetworkCredential("mahetayash8@gmail.com", "twsl vkzh xwvz wosh"),
+                    EnableSsl = true
+                };
 
+                MailMessage message = new MailMessage();
+                message.From = new MailAddress("mahetayash8@gmail.com", "Yash Maheta");
+                message.To.Add(toEmail);
+                message.Subject = subject;
+                message.Body = body;
+                message.IsBodyHtml = true; 
 
+                smtp.Send(message);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error sending email: " + ex.Message);
+                return false;
+            }
+        }
     }
 }

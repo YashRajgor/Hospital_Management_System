@@ -21,8 +21,6 @@ namespace Hospital_Management_System.Controllers
         public IActionResult addUser(User user)
         {
             int result = manageUser.checkUserExitsOrNot(user);
-            
-            string randomPassword = services.generatePassword();
 
             if (result < 1)
             {

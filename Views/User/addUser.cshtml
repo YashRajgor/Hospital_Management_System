@@ -125,13 +125,13 @@
                     </div>
                 </div>
 
-                <div class="row mb-3">
+@*                 <div class="row mb-3">
                     <div class="col-md-12">
                         <label class="form-label">Password</label>
                         <input asp-for="password" type="password" class="form-control" placeholder="Enter password" />
                         <span asp-validation-for="password" class="text-danger"></span>
                     </div>
-                </div>
+                </div> *@
 
                 <div class="row mb-3">
                     <div class="col-md-12">
@@ -154,15 +154,15 @@
                 </div>
                 <br />
                 <div>
-                    @if (TempData["UserMessage"] == "Exists")
+                    @if (TempData["UserMessage"]?.ToString() == "Exists")
                     {
                         <div class="alert alert-warning">User already exists.</div>
                     }
-                    else if (TempData["UserMessage"] == "Success")
+                    else if (TempData["UserMessage"]?.ToString() == "Success")
                     {
                         <div class="alert alert-success">User added successfully.</div>
                     }
-                    else if (TempData["UserMessage"] == "failed")
+                    else if (TempData["UserMessage"]?.ToString() == "failed")
                     {
                         <div class="alert alert-danger">User not inserted.</div>
                     }

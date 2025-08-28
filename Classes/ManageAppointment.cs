@@ -46,7 +46,6 @@ namespace Hospital_Management_System.Classes
                 patient.PatientName = reader["Name"].ToString() ?? "";
                 patientList.Add(patient);
             }
-
             reader.Close();
             return patientList;
         }

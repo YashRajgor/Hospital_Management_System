@@ -29,6 +29,7 @@ namespace Hospital_Management_System.Controllers
         [HttpPost]
         public IActionResult addDoctor(Doctor doctor, List<string> SelectedDepartments)
         {
+            userId = HttpContext.Session.GetInt32("UserId");
             int check = manageDoctor.check_Befor_Insert(doctor.doctorName!);
 
             if (check > 0)
@@ -112,6 +113,7 @@ namespace Hospital_Management_System.Controllers
         [HttpPost]
         public IActionResult editDoctor(Doctor doctor, List<int> SelectedDepartments)
         {
+            userId = HttpContext.Session.GetInt32("UserId");
             doctorsList.Clear();
             DepartmentIdList.Clear();
 

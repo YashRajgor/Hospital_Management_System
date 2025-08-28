@@ -1,5 +1,6 @@
 ﻿using Hospital_Management_System.Controllers;
 using Hospital_Management_System.Models;
+using Hospital_Management_System.Services;
 using Microsoft.Data.SqlClient;
 
 namespace Hospital_Management_System.Classes
@@ -7,13 +8,18 @@ namespace Hospital_Management_System.Classes
     public class ManageUser
     {
         DBHelper dbHelper;
+        MailService mailService;
 
         public ManageUser()
         {
             dbHelper = new DBHelper();
+            mailService = new MailService();
         }
         public int addUser(User user)
         {
+            string randomPassword = mailService.generatePassword();
+            user.password = randomPassword;
+
             SqlParameter[] parameter = new SqlParameter[]
             {
                 new SqlParameter("@userName",user.userName),
@@ -22,7 +28,22 @@ namespace Hospital_Management_System.Classes
                 new SqlParameter("@number",user.phoneNumber),
             };
 
-            return dbHelper.ExecuteNonQuery("SP_Add_User", parameter);
+            int result=dbHelper.ExecuteNonQuery("SP_Add_User", parameter);
+
+            if (result > 0)
+            {
+                string subject = "Welcome to Hospital Management System";
+                string body = $"<h3>Hello {user.userName},</h3>" +
+                              $"<p>Your account has been created successfully.</p>" +
+                              $"<p><b>Username:</b> {user.userName}</p>" +
+                              $"<p><b>Password:</b> {randomPassword}</p>" +
+                              $"<p>Please login and change your password.</p>";
+
+                mailService.SendMail(user.email!, subject, body);
+            }
+
+            return result;
+
         }
 
         public int checkUserExitsOrNot(User user)

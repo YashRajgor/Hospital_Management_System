@@ -59,12 +59,12 @@
         }
 
         @@keyframes fadeIn {
-            0% {
+            from {
                 opacity: 0;
                 transform: translateY(10px);
             }
 
-            100% {
+            to {
                 opacity: 1;
                 transform: translateY(0);
             }
@@ -104,9 +104,100 @@
             font-size: 0.9rem;
         }
 
+        #loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.95);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+            #loader-overlay.active {
+                opacity: 1;
+                visibility: visible;
+            }
+
+        /* Loader Container */
+        .loader {
+            position: relative;
+            width: 110px;
+            height: 110px;
+        }
+
+        /* Rotating Circle */
+        .loader-circle {
+            width: 100%;
+            height: 100%;
+            border: 8px solid #d6e4ff;
+            border-top: 8px solid #0d6efd; /* Hospital Blue */
+            border-radius: 50%;
+            animation: spin 1.2s linear infinite;
+        }
+
+        /* Medical Cross */
+        .loader-cross {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+        }
+
+            .loader-cross .horizontal,
+            .loader-cross .vertical {
+                position: absolute;
+                background-color: #0d6efd; /* Bootstrap Primary Blue */
+                border-radius: 3px;
+            }
+
+            .loader-cross .horizontal {
+                top: 50%;
+                left: 0;
+                width: 100%;
+                height: 12px;
+                transform: translateY(-50%);
+            }
+
+            .loader-cross .vertical {
+                left: 50%;
+                top: 0;
+                width: 12px;
+                height: 100%;
+                transform: translateX(-50%);
+            }
+
+        /* Animations */
+        @@keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 <body>
+
+    <!-- Loader -->
+    <div id="loader-overlay">
+        <div class="loader">
+            <div class="loader-circle"></div>
+            <div class="loader-cross">
+                <div class="horizontal"></div>
+                <div class="vertical"></div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Top Navbar -->
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark px-3 shadow-sm" style="background-color: #1f2937;">
@@ -130,7 +221,7 @@
                         <!-- User Dropdown -->
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="departmentDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-user"></i> User
+                                <i class="bi bi-person-circle"></i> User
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="departmentDropdown">
                                 <li><a class="dropdown-item" asp-action="addUser" asp-controller="User">Add User</a></li>
@@ -182,8 +273,15 @@
                             </ul>
                         </li>
 
+                        <!-- ✅ Logout Button on Right Side -->
+                        @*  <form asp-action="Logout" asp-controller="Account" method="post" class="ms-auto">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </button>
+                        </form> *@
+
                         <!-- Doctor Department Dropdown -->
-                       @*  <li class="nav-item dropdown">
+                        @*  <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="ddDropdown" role="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-diagram-3"></i> Doctor Department
                             </a>
@@ -204,17 +302,60 @@
         @RenderBody()
     </main>
 
-    <!-- Footer (optional) -->
-    @* <footer class="border-top footer text-muted mt-auto py-3 bg-light">
-        <div class="container text-center">
-            &copy; 2025 - Hospital Management System
-        </div>
-    </footer> *@
-
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        const loader = document.getElementById("loader-overlay");
+
+        function showLoader() {
+            loader.classList.add("active");
+        }
+
+        function hideLoader() {
+            loader.classList.remove("active");
+        }
+
+        // Show loader on navigation
+        window.addEventListener("beforeunload", () => showLoader());
+        window.addEventListener("load", () => hideLoader());
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // Attach loader to all forms automatically
+            document.querySelectorAll("form").forEach(form => {
+                form.addEventListener("submit", () => showLoader());
+            });
+
+            // Intercept fetch API
+            if (window.fetch) {
+                const originalFetch = window.fetch;
+                window.fetch = function (...args) {
+                    showLoader();
+                    return originalFetch(...args)
+                        .finally(() => hideLoader());
+                };
+            }
+
+            // Intercept XMLHttpRequest
+            const oldXHR = window.XMLHttpRequest;
+            function newXHR() {
+                const realXHR = new oldXHR();
+                realXHR.addEventListener("loadstart", () => showLoader());
+                realXHR.addEventListener("loadend", () => hideLoader());
+                return realXHR;
+            }
+            window.XMLHttpRequest = newXHR;
+
+            // Intercept jQuery AJAX (if jQuery is used)
+            if (window.jQuery) {
+                $(document).ajaxStart(() => showLoader());
+                $(document).ajaxStop(() => hideLoader());
+            }
+        });
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
