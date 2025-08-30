@@ -76,17 +76,6 @@
             transform: scale(1.05);
         }
 </style>
-@* TempData["DeleteMessage"] *@
-@* @{
-    if (TempData["DeleteMessage"] != null)
-    {
-        <div class="mt-4 feedback-message">
-            <div class="alert alert-danger shadow-sm" role="alert">
-                Error During Delete Department
-            </div>
-        </div>
-    }
-} *@
 <div class="container mt-5">
     <div class="card">
         <div class="card-header">User List</div>
@@ -102,7 +91,7 @@
                             <th>IsActive</th>
                             <th>Created Date</th>
                             <th>Modified Date</th>
-                            <th>Actions</th>
+                            @* <th>Actions</th> *@
                         </tr>
                     </thead>
                     <tbody>
@@ -125,7 +114,7 @@
                                 </td>
                                 <td>@userinfo.createdDate</td>
                                 <td>@userinfo.modifiedDate</td>
-                                <td>
+                               @*  <td>
                                     @{
                                         if (userinfo.UserId == ViewBag.userId)
                                         {
@@ -137,7 +126,7 @@
                                             </a>
                                         }
                                     }
-                                </td>
+                                </td> *@
                             </tr>
                         }
                         @if (!Model.Any())

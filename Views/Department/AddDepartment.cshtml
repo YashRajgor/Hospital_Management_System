@@ -152,15 +152,15 @@
 
                 <!-- Alert Messages -->
                 <div>
-                    @if (TempData["Message"] == "Exists")
+                    @if (TempData["Message"]?.ToString() == "Exists")
                     {
                         <div class="alert alert-warning">Department already exists.</div>
                     }
-                    else if (TempData["Message"] == "Sussfully")
+                    else if (TempData["Message"]?.ToString() == "Sussfully")
                     {
                         <div class="alert alert-success">Department added successfully.</div>
                     }
-                    else if (TempData["Message"] == "failed")
+                    else if (TempData["Message"]?.ToString() == "failed")
                     {
                         <div class="alert alert-danger">Department not inserted.</div>
                     }
@@ -169,130 +169,3 @@
         </div>
     </div>
 </div>
-
-
-
-
-
-
-@* @model Hospital_Management_System.Models.Department
-
-@{
-    ViewBag.Title = "Add Department";
-    <partial name="_ValidationScriptsPartial" />
-}
-
-<style>
-    body {
-        background-color: #f4f7fe;
-        font-family: 'Segoe UI', sans-serif;
-    }
-
-    .card {
-        border-radius: 12px;
-        background: #fff;
-        border: none;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
-        transition: all 0.3s ease-in-out;
-    }
-
-        .card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.1);
-        }
-
-    .card-header {
-        background-color: #2b8eff;
-        color: white;
-        text-align: center;
-        font-size: 1.4rem;
-        font-weight: 600;
-        padding: 18px 0;
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
-        letter-spacing: 0.5px;
-    }
-
-    label {
-        font-weight: 500;
-        margin-bottom: 6px;
-    }
-
-    .form-control {
-        border-radius: 8px;
-        padding: 10px 14px;
-        transition: border-color 0.3s, box-shadow 0.3s;
-    }
-
-        .form-control:focus {
-            border-color: #2b8eff;
-            box-shadow: 0 0 0 0.15rem rgba(43, 142, 255, 0.25);
-        }
-
-    .btn-primary {
-        background-color: #2b8eff;
-        border: none;
-        padding: 10px;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-        border-radius: 8px;
-        transition: background-color 0.3s, transform 0.3s;
-    }
-
-        .btn-primary:hover {
-            background-color: #1f6fd4;
-            transform: scale(1.02);
-        }
-
-    .animated-form {
-        animation: fadeIn 0.6s ease-out both;
-    }
-</style>
-
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-6 col-md-8">
-            <div class="card animated-form">
-                <div class="card-header">
-                    Add Department
-                </div>
-                <div class="card-body p-4">
-                    <form method="post" asp-controller="Admin" asp-action="AddDepartment">
-                        <div class="mb-3">
-                            <label for="DepartmentName" class="form-label">Department Name</label>
-                            <input type="text" asp-for="DepartmentName" class="form-control" name="DepartmentName" placeholder="Enter department name" />
-                            <span asp-validation-for="DepartmentName" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="Description" class="form-label">Description</label>
-                            <input type="text" class="form-control" asp-for="DepartmentDescription" name="DepartmentDescription" rows="4" placeholder="Enter description" />
-                            <span asp-validation-for="DepartmentDescription" class="text-danger"></span>
-                        </div>
-
-                        <div class="d-grid mt-4">
-                            <button type="submit" asp-action="AddDepartment" class="btn btn-primary">Add Department</button>
-                        </div>
-                    </form>
-                    @{
-                        if (TempData["Message"] == "Exists")
-                        {
-                            <small><span class="text-warning">Department Already Exists</span></small>
-                    
-                            <br />
-                        }
-                        else if (TempData["Message"] == "Sussfully")
-                        {
-                            <small><span class="text-success">Department add SuccessFully</span></small>
-                        }
-                        else if (TempData["Message"] == "failed")
-                        {
-                            <small><span class="text-danger">Department Not Insert</span></small>
-                        }
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
- *@

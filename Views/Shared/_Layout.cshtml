@@ -272,24 +272,41 @@
                                 <li><a class="dropdown-item" asp-action="selectAllAppointment" asp-controller="Appointment">View Appointments</a></li>
                             </ul>
                         </li>
+                    </ul>
 
-                        <!-- ✅ Logout Button on Right Side -->
-                        @*  <form asp-action="Logout" asp-controller="Account" method="post" class="ms-auto">
-                            <button type="submit" class="btn btn-danger">
-                                <i class="bi bi-box-arrow-right"></i> Logout
-                            </button>
-                        </form> *@
-
-                        <!-- Doctor Department Dropdown -->
-                        @*  <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="ddDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="bi bi-diagram-3"></i> Doctor Department
+                    <!-- Profile Menu (Right Side) -->
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item dropdown position-static">
+                            <a class="nav-link dropdown-toggle d-flex align-items-center"
+                               href="#"
+                               id="profileDropdown"
+                               role="button"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                <i class="bi bi-person-circle me-1"></i> Account
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="ddDropdown">
-                                <li><a class="dropdown-item" href="#">Assign</a></li>
-                                <li><a class="dropdown-item" href="#">Manage</a></li>
+
+                            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="profileDropdown" style="margin-top: 0; z-index: 1060;">
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="bi bi-person-lines-fill me-2"></i> Profile
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="bi bi-gear me-2"></i> Settings
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" class="d-inline">
+                                        <button type="submit" class="dropdown-item text-danger">
+                                            <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                        </button>
+                                    </form>
+                                </li>
                             </ul>
-                        </li> *@
+                        </li>
 
                     </ul>
                 </div>
@@ -302,59 +319,83 @@
         @RenderBody()
     </main>
 
+    <script>
+        // Loader Service
+        const Loader = (() => {
+            const overlay = document.getElementById("loader-overlay");
+            let counter = 0; // track concurrent calls
+
+            function show() {
+                counter++;
+                overlay.classList.add("active");
+            }
+            function hide() {
+                counter = Math.max(0, counter - 1);
+                if (counter === 0) overlay.classList.remove("active");
+            }
+
+            return { show, hide };
+        })();
+
+        // Attach globally
+        document.addEventListener("DOMContentLoaded", () => {
+            // Forms
+            document.addEventListener("submit", e => {
+                const form = e.target.closest("form");
+                if (!form) return;
+                if (!form.querySelector("input,select,textarea")) return; // skip logout forms
+                if (form.checkValidity && !form.checkValidity()) return;
+                Loader.show();
+            });
+
+            // Links (internal only)
+            document.addEventListener("click", e => {
+                const a = e.target.closest("a");
+                if (!a) return;
+                if (a.hasAttribute("data-bs-toggle") || a.target === "_blank") return;
+                const href = a.getAttribute("href");
+                if (!href || href.startsWith("#") || href.startsWith("javascript:")) return;
+                try {
+                    if (new URL(a.href, location.href).origin !== location.origin) return;
+                } catch { return; }
+                Loader.show();
+            });
+        });
+
+        // Fetch hook
+        if (window.fetch) {
+            const _fetch = window.fetch;
+            window.fetch = (...args) => {
+                Loader.show();
+                return _fetch(...args).finally(() => Loader.hide());
+            };
+        }
+
+        // XHR hook
+        if (window.XMLHttpRequest) {
+            const send = XMLHttpRequest.prototype.send;
+            XMLHttpRequest.prototype.send = function (...args) {
+                this.addEventListener("loadstart", Loader.show);
+                this.addEventListener("loadend", Loader.hide);
+                return send.apply(this, args);
+            };
+        }
+
+        // jQuery Ajax hook
+        if (window.jQuery) {
+            $(document).on("ajaxStart", Loader.show);
+            $(document).on("ajaxStop", Loader.hide);
+        }
+
+        // Page load
+        window.addEventListener("load", Loader.hide);
+        window.addEventListener("pageshow", Loader.hide);
+    </script>
+
     <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
-    <script>
-        const loader = document.getElementById("loader-overlay");
-
-        function showLoader() {
-            loader.classList.add("active");
-        }
-
-        function hideLoader() {
-            loader.classList.remove("active");
-        }
-
-        // Show loader on navigation
-        window.addEventListener("beforeunload", () => showLoader());
-        window.addEventListener("load", () => hideLoader());
-
-        document.addEventListener("DOMContentLoaded", () => {
-            // Attach loader to all forms automatically
-            document.querySelectorAll("form").forEach(form => {
-                form.addEventListener("submit", () => showLoader());
-            });
-
-            // Intercept fetch API
-            if (window.fetch) {
-                const originalFetch = window.fetch;
-                window.fetch = function (...args) {
-                    showLoader();
-                    return originalFetch(...args)
-                        .finally(() => hideLoader());
-                };
-            }
-
-            // Intercept XMLHttpRequest
-            const oldXHR = window.XMLHttpRequest;
-            function newXHR() {
-                const realXHR = new oldXHR();
-                realXHR.addEventListener("loadstart", () => showLoader());
-                realXHR.addEventListener("loadend", () => hideLoader());
-                return realXHR;
-            }
-            window.XMLHttpRequest = newXHR;
-
-            // Intercept jQuery AJAX (if jQuery is used)
-            if (window.jQuery) {
-                $(document).ajaxStart(() => showLoader());
-                $(document).ajaxStop(() => hideLoader());
-            }
-        });
-    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>
