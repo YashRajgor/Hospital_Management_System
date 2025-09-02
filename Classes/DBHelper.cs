@@ -32,6 +32,7 @@ namespace Hospital_Management_System.Classes
             {
                 cmd.Parameters.AddRange(perameter);
             }
+            
             return cmd.ExecuteReader();
         }
 

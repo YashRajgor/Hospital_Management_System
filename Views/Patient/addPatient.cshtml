@@ -32,7 +32,6 @@
         color: white;
         text-align: center;
         padding: 40px 20px;
-
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -102,7 +101,7 @@
 
         <!-- Right Side (Form) -->
         <div class="col-md-8 patient-form-right">
-            <form method="post" asp-action="addPatient" asp-controller="Patient">
+            <form method="post" asp-action="addPatient" asp-controller="Patient" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label">Name</label>
                     <input asp-for="PatientName" class="form-control" placeholder="Enter patient name" />
@@ -134,7 +133,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">Phone Number</label>
-                    <input asp-for="phoneNumber" class="form-control" placeholder="Enter phone number" />
+                    <input asp-for="phoneNumber" type="number" class="form-control" placeholder="Enter phone number" />
                     <span asp-validation-for="phoneNumber" class="text-danger"></span>
                 </div>
 
@@ -156,6 +155,12 @@
                     <span asp-validation-for="state" class="text-danger"></span>
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label">Upload Patient Image</label>
+                    <input asp-for="ImageFile" type="file" class="form-control" />
+                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                </div>
+
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Add Patient</button>
                 </div>
@@ -164,15 +169,15 @@
             @if (TempData["PatientMessage"] != null)
             {
                 <div class="mt-3">
-                    @if (TempData["PatientMessage"].ToString() == "Success")
+                    @if (TempData["PatientMessage"]?.ToString() == "Success")
                     {
                         <div class="alert alert-success">Patient added successfully.</div>
                     }
-                    else if (TempData["PatientMessage"].ToString() == "Fail")
+                    else if (TempData["PatientMessage"]?.ToString() == "Fail")
                     {
                         <div class="alert alert-danger">Patient insertion failed.</div>
                     }
-                    else if (TempData["PatientMessage"].ToString() == "Exists")
+                    else if (TempData["PatientMessage"]?.ToString() == "Exists")
                     {
                         <div class="alert alert-warning">Patient already exists.</div>
                     }
@@ -181,143 +186,3 @@
         </div>
     </div>
 </div>
-
-
-@* @model Hospital_Management_System.Models.Patient
-
-@{
-    <partial name="_ValidationScriptsPartial" />
-}
-<title>Patient Information</title>
-<style>
-    body {
-        background-color: #f8f9fa;
-    }
-
-    .form-container {
-        max-width: 500px;
-        margin: 50px auto;
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 0 15px rgba(0, 123, 255, 0.2);
-        animation: fadeInUp 1s ease-out;
-    }
-
-    .form-header {
-        background-color: #2196f3;
-        color: white;
-        padding: 15px;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
-        text-align: center;
-        font-weight: bold;
-        font-size: 1.25rem;
-    }
-
-    .form-body {
-        padding: 25px;
-    }
-
-    .btn-primary {
-        background-color: #2196f3;
-        border-color: #2196f3;
-        font-weight: bold;
-    }
-
-    @@keyframes fadeInUp {
-        from {
-            transform: translateY(40px);
-            opacity: 0;
-        }
-
-        to {
-            transform: translateY(0);
-            opacity: 1;
-        }
-    }
-</style>
-
-<div class="form-container">
-    <div class="form-header">Add Patient</div>
-    <div class="form-body">
-        <form method="post" asp-action="addPatient" asp-controller="Patient" >
-            <div class="mb-3">
-                <label for="name" class="form-label">Name</label>
-                <input type="text" asp-for="PatientName" name="PatientName" class="form-control" placeholder="Enter patient name">
-                <span asp-validation-for="PatientName" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label for="dob" class="form-label">Date of Birth</label>
-                <input type="date" asp-for="dateOfBirth" name="dateOfBirth" class="form-control">
-                <span asp-validation-for="dateOfBirth" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label for="gender" class="form-label">Gender</label>
-                <select class="form-select" asp-for="gender" id="gender">
-                    <option selected disabled>-- Select Gender --</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                </select>
-                <span asp-validation-for="gender" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" asp-for="email" class="form-control" placeholder="Enter Email">
-                <span asp-validation-for="email" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label for="phone" class="form-label">Phone Number</label>
-                <input type="number" asp-for="phoneNumber" class="form-control" placeholder="Enter Phone Number">
-                <span asp-validation-for="phoneNumber" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label for="Address" class="form-label">Address</label>
-                <input type="text" asp-for="address" class="form-control" placeholder="Enter Address">
-                <span asp-validation-for="address" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label for="City" class="form-label">City</label>
-                <input type="text" asp-for="city" class="form-control" placeholder="Enter City">
-                <span asp-validation-for="city" class="text-danger"></span>
-            </div>
-
-            <div class="mb-3">
-                <label for="State" class="form-label">State</label>
-                <input type="text" asp-for="state" class="form-control" placeholder="Enter State">
-                <span asp-validation-for="state" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary w-100">Add Patient</button>
-        </form>
-        @if (TempData["PatientMessage"] != null)
-        {
-            <div class="mt-4 feedback-message">
-                @if (TempData["PatientMessage"].ToString() == "Success")
-                {
-                    <div class="alert alert-success shadow-sm" role="alert">
-                        Patient added successfully.
-                    </div>
-                }
-                else if (TempData["PatientMessage"].ToString() == "Fail")
-                {
-                    <div class="alert alert-danger shadow-sm" role="alert">
-                        Patient insertion failed.
-                    </div>
-                }
-                else if (TempData["PatientMessage"].ToString() == "Exists")
-                {
-                    <div class="alert alert-warning shadow-sm" role="alert">
-                        Patient Name Already Exists
-                    </div>
-                }
-            </div>
-        }
-    </div>
-</div>
- *@

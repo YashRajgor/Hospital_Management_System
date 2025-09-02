@@ -24,6 +24,7 @@ namespace Hospital_Management_System.Classes
                 new SqlParameter("@address",patient.address),
                 new SqlParameter("@city",patient.city),
                 new SqlParameter("@state",patient.state),
+                new SqlParameter("@image", (object?)patient.PatientImage ?? DBNull.Value),
                 new SqlParameter("@userid",userId),
             };
             return dbHelper.ExecuteNonQuery("SP_Add_Patient", parameter);
@@ -69,6 +70,7 @@ namespace Hospital_Management_System.Classes
                 patient.created = Convert.ToDateTime(reader["Created"]);
                 patient.modified = Convert.ToDateTime(reader["Modified"]);
                 patient.userName = reader["UserName"].ToString();
+                patient.PatientImage = reader["PatientImage"].ToString();
                 PatientController.Patients.Add(patient);
             }
             return PatientController.Patients;
@@ -94,7 +96,7 @@ namespace Hospital_Management_System.Classes
 
             SqlDataReader reader = dbHelper.ExecuteReader("SP_Check_Before_Update", parameter);
 
-            if(reader.HasRows)
+            if (reader.HasRows)
             {
                 reader.Close();
                 return 1;
@@ -104,7 +106,7 @@ namespace Hospital_Management_System.Classes
             return 0;
         }
 
-        public int editPatient(Patient patient,int userId)
+        public int editPatient(Patient patient, int userId)
         {
             SqlParameter[] parameter = new SqlParameter[]
             {
@@ -118,10 +120,10 @@ namespace Hospital_Management_System.Classes
                 new SqlParameter("@city",patient.city),
                 new SqlParameter("@state",patient.state),
                 new SqlParameter("@isActive",patient.isActive),
+                new SqlParameter("@image", (object?)patient.PatientImage ?? DBNull.Value),
                 new SqlParameter("@userId",userId),
             };
-            return dbHelper.ExecuteNonQuery("SP_Edit_Patient",parameter);
+            return dbHelper.ExecuteNonQuery("SP_Edit_Patient", parameter);
         }
-
     }
 }
