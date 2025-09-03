@@ -233,7 +233,7 @@ namespace Hospital_Management_System.Classes
             }
 
             dr.Close();
-            return doctor;
+            return doctor!;
         }
 
     }

@@ -1,4 +1,6 @@
-﻿@{
+﻿@model Dashboard
+
+@{
     ViewData["Title"] = "Dashboard";
 }
 
@@ -49,8 +51,8 @@
     }
 
     .status-process {
-        background: #f5c6cb;
-        color: #721c24;
+        background-color: #007bff;
+        color: white;
     }
 </style>
 
@@ -63,28 +65,28 @@
             <div class="card card-stat shadow-sm text-center p-3">
                 <div><i class="bi bi-calendar-check fs-2 text-primary"></i></div>
                 <h6>Total Appoint.</h6>
-                <h3>150</h3>
+                <h3>@Model.totalAppointment</h3>
             </div>
         </div>
         <div class="col-md-3" data-aos="fade-up" data-aos-delay="200">
             <div class="card card-stat shadow-sm text-center p-3">
                 <div><i class="bi bi-hourglass-split fs-2 text-warning"></i></div>
                 <h6>Pending</h6>
-                <h3>12</h3>
+                <h3>@Model.pendingAppointment</h3>
             </div>
         </div>
         <div class="col-md-3" data-aos="fade-up" data-aos-delay="300">
             <div class="card card-stat shadow-sm text-center p-3">
                 <div><i class="bi bi-check-circle fs-2 text-success"></i></div>
                 <h6>Completed</h6>
-                <h3>100</h3>
+                <h3>@Model.completedAppointment</h3>
             </div>
         </div>
         <div class="col-md-3" data-aos="fade-up" data-aos-delay="400">
             <div class="card card-stat shadow-sm text-center p-3">
                 <div><i class="bi bi-clipboard-pulse fs-2 text-secondary"></i></div>
                 <h6>Process</h6>
-                <h3>38</h3>
+                <h3>@Model.processAppointment</h3>
             </div>
         </div>
     </div>
@@ -94,28 +96,28 @@
             <div class="card card-stat shadow-sm text-center p-3">
                 <div><i class="bi bi-person fs-2 text-primary"></i></div>
                 <h6>Doctors</h6>
-                <h3>25</h3>
+                <h3>@Model.totalDoctor</h3>
             </div>
         </div>
         <div class="col-md-3" data-aos="zoom-in" data-aos-delay="200">
             <div class="card card-stat shadow-sm text-center p-3">
                 <div><i class="bi bi-heart-pulse fs-2 text-danger"></i></div>
                 <h6>Patients</h6>
-                <h3>200</h3>
+                <h3>@Model.totalPatient</h3>
             </div>
         </div>
         <div class="col-md-3" data-aos="zoom-in" data-aos-delay="300">
             <div class="card card-stat shadow-sm text-center p-3">
                 <div><i class="bi bi-grid fs-2 text-secondary"></i></div>
                 <h6>Departments</h6>
-                <h3>10</h3>
+                <h3>@Model.totalDepartment</h3>
             </div>
         </div>
         <div class="col-md-3" data-aos="zoom-in" data-aos-delay="400">
             <div class="card card-stat shadow-sm text-center p-3">
                 <div><i class="bi bi-people fs-2 text-info"></i></div>
                 <h6>Users</h6>
-                <h3>8</h3>
+                <h3>@Model.totalUser</h3>
             </div>
         </div>
     </div>
@@ -164,30 +166,41 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr data-aos="fade-up" data-aos-delay="100">
-                        <td>John Doe</td>
-                        <td>Dr. Smith</td>
-                        <td>20-04-2024</td>
-                        <td><span class="status-badge status-pending">Pending</span></td>
-                    </tr>
-                    <tr data-aos="fade-up" data-aos-delay="200">
-                        <td>Jane Roe</td>
-                        <td>Dr. Johnson</td>
-                        <td>21-04-2024</td>
-                        <td><span class="status-badge status-completed">Completed</span></td>
-                    </tr>
-                    <tr data-aos="fade-up" data-aos-delay="300">
-                        <td>Richard Roe</td>
-                        <td>Dr. Brown</td>
-                        <td>22-04-2024</td>
-                        <td><span class="status-badge status-cancelled">Cancelled</span></td>
-                    </tr>
-                    <tr data-aos="fade-up" data-aos-delay="400">
-                        <td>Mary Major</td>
-                        <td>Dr. Williams</td>
-                        <td>23-04-2024</td>
-                        <td><span class="status-badge status-pending">Pending</span></td>
-                    </tr>
+                    @if (Model.latestAppointments != null && Model.latestAppointments.Any())
+                    {
+                        foreach (var appt in Model.latestAppointments)
+                        {
+                            <tr>
+                                <td>@appt.PatientName</td>
+                                <td>@appt.DoctorName</td>
+                                <td>@appt.AppointmentDate.ToString("dd-MM-yyyy")</td>
+                                <td>
+                                    @if (appt.AppointmentStatus == "pending")
+                                    {
+                                        <span class="status-badge status-pending">Pending</span>
+                                    }
+                                    else if (appt.AppointmentStatus == "complete")
+                                    {
+                                        <span class="status-badge status-completed">Completed</span>
+                                    }
+                                    else if (appt.AppointmentStatus == "process")
+                                    {
+                                        <span class="status-badge status-process">Process</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge status-cancelled">@appt.AppointmentStatus</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center text-muted">No appointments found</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>

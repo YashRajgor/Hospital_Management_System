@@ -10,5 +10,6 @@
         public int totalDepartment { get; set; }
         public int totalPatient { get; set; }
         public int totalUser { get; set; }
+        public List<Appointment> latestAppointments { get; set; } = new List<Appointment>();
     }
 }

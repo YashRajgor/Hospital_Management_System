@@ -59,7 +59,7 @@ namespace Hospital_Management_System.Controllers
             }
             catch (Exception ex)
             {
-                TempData["DeleteMessage"] = "Error";
+                TempData["DeleteMessage"] = "Error"+ex;
             }
             return RedirectToAction("ManageDepartment","Department");
         }

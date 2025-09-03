@@ -51,7 +51,7 @@ namespace Hospital_Management_System.Classes
             return cmd.ExecuteNonQuery(); 
         }
 
-        public object ExecuteScalar(string storedProcedure, SqlParameter[] parameters)
+        public object ExecuteScalar(string storedProcedure, SqlParameter[]? parameters=null)
         {
             SqlCommand cmd = new SqlCommand(storedProcedure, connection)
             {

@@ -152,11 +152,11 @@
                     <button type="submit" class="btn btn-primary">Update User</button>
                 </div>
                 <br />
-                @if (TempData["UserEditMessage"] == "Exists")
+                @if (TempData["UserEditMessage"]?.ToString() == "Exists")
                 {
                     <div class="alert alert-warning">User Already Exists</div>
                 }
-                else if (TempData["UserEditMessage"] == "Error")
+                else if (TempData["UserEditMessage"]?.ToString() == "Error")
                 {
                     <div class="alert alert-danger">User Not Updated</div>
                 }

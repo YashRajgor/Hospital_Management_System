@@ -156,23 +156,23 @@
             @if (TempData["Message"] != null)
             {
                 <div class="mt-4" id="alertMessage">
-                    @if (TempData["Message"].ToString() == "Successfull")
+                    @if (TempData["Message"]?.ToString() == "Successfull")
                     {
                         <div class="alert alert-success">Doctor added successfully.</div>
                     }
-                    else if (TempData["Message"].ToString() == "fail")
+                    else if (TempData["Message"]?.ToString() == "fail")
                     {
                         <div class="alert alert-danger">Doctor insertion failed.</div>
                     }
-                    else if (TempData["Message"].ToString() == "Exists")
+                    else if (TempData["Message"]?.ToString() == "Exists")
                     {
                         <div class="alert alert-warning">Doctor Name Already Exists</div>
                     }
-                    else if (TempData["Message"].ToString() == "DepartmentNotAdd")
+                    else if (TempData["Message"]?.ToString() == "DepartmentNotAdd")
                     {
                         <div class="alert alert-danger">Department Not Add</div>
                     }
-                    else if (TempData["Message"].ToString() == "DoctorNotFound")
+                    else if (TempData["Message"]?.ToString() == "DoctorNotFound")
                     {
                         <div class="alert alert-danger">Doctor Not Found</div>
                     }
