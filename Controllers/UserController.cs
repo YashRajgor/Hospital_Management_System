@@ -55,14 +55,17 @@ namespace Hospital_Management_System.Controllers
             return RedirectToAction("selectAllUser", "User");
         }
 
-        public IActionResult EditUser(int userId)
+        public IActionResult EditUser()
         {
+            userId = HttpContext.Session.GetInt32("UserId");
+            manageUser.getUserList();
             User? obj = userList.Find(u => u.UserId == userId);
 
             if (obj == null)
             {
                 return RedirectToAction("selectAllUser", "User");
             }
+
             return View(obj);
         }
 
@@ -78,7 +81,7 @@ namespace Hospital_Management_System.Controllers
 
                 if (result > 0)
                 {
-                    return RedirectToAction("selectAllUser", "User");
+                    return RedirectToAction("Dashboard", "Dashboard");
                 }
                 else
                 {

@@ -42,5 +42,11 @@ namespace Hospital_Management_System.Controllers
                 return View();
             }
         }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login","Admin");
+        }
     }
 }

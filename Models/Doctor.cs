@@ -7,7 +7,10 @@ namespace Hospital_Management_System.Models
         public int doctorId {  get; set; }
         [Required(ErrorMessage ="Enter Doctor Name")]
         public string? doctorName { get; set; }
-        [Required(ErrorMessage = "Enter Phone Number")] 
+
+        [Required(ErrorMessage = "Enter Phone number")]
+        [Phone]
+        [RegularExpression(@"^[0-9]{10}$", ErrorMessage = "Phone Number must be exactly 10 digits and contain only numbers.")]
         public string? doctorPhone { get; set; }
         [Required(ErrorMessage = "Enter Email")] 
         public string? doctorEmail { get; set; }

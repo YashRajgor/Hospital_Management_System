@@ -1,89 +1,165 @@
-﻿<!-- Include this in your Razor view where dynamic data will be injected -->
-@model List<Hospital_Management_System.Models.User>
+﻿@model List<Hospital_Management_System.Models.User>
 
 <style>
     body {
         background-color: #f4f7fe;
         font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Page fade-in */
+    .fade-in-page {
+        opacity: 0;
+        animation: fadeInPage 0.8s ease-in forwards;
+    }
+
+    @@keyframes fadeInPage {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
     }
 
     .card {
         border-radius: 12px;
         box-shadow: 0 12px 28px rgba(0, 0, 0, 0.07);
         transition: 0.3s ease;
+        overflow: hidden;
     }
 
-        .card:hover {
-            transform: translateY(-2px);
-        }
-
     .card-header {
-        background-color: #2b8eff;
+        background: linear-gradient(90deg, #7b2ff7, #9c4eff);
         color: white;
         font-weight: 600;
         font-size: 1.3rem;
         padding: 1rem;
         text-align: center;
-        border-top-left-radius: 12px;
-        border-top-right-radius: 12px;
     }
 
+    /* Table Styling */
+    table {
+        border-collapse: separate;
+        border-spacing: 0 8px;
+        width: 100%;
+    }
+
+    thead th {
+        background-color: #9c4eff;
+        color: white;
+        font-weight: 600;
+        text-align: center;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.95rem;
+    }
+
+    tbody tr {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: 0.3s ease;
+        opacity: 0;
+        transform: translateY(15px);
+        animation: fadeInRow 0.6s ease forwards;
+    }
+
+        tbody tr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+
+    tbody td {
+        padding: 12px;
+        vertical-align: middle;
+        border: none;
+        font-size: 0.9rem;
+        word-break: break-word;
+    }
+
+    /* Row fade-in animation */
+    @@keyframes fadeInRow {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Checkbox styling */
+    .custom-checkbox {
+        accent-color: #9c4eff;
+        transform: scale(1.2);
+        cursor: pointer;
+    }
+
+    /* Active / Inactive badges */
     .badge-active {
         background-color: #28a745;
-        padding: 6px 10px;
-        border-radius: 12px;
-        font-size: 0.85rem;
+        padding: 6px 12px;
+        border-radius: 16px;
+        font-size: 0.8rem;
         color: white;
+        font-weight: 500;
     }
 
     .badge-inactive {
         background-color: #dc3545;
-        padding: 6px 10px;
-        border-radius: 12px;
-        font-size: 0.85rem;
-        color: white;
-    }
-
-    .action-btn {
-        border: none;
-        border-radius: 6px;
         padding: 6px 12px;
-        font-size: 0.85rem;
+        border-radius: 16px;
+        font-size: 0.8rem;
+        color: white;
         font-weight: 500;
-        transition: 0.3s ease;
-        color: #fff;
-        margin: 2px;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
     }
 
-    .btn-edit {
-        background-color: #17a2b8;
-    }
-
-        .btn-edit:hover {
-            background-color: #138496;
-            transform: scale(1.05);
+    /* Responsive Design */
+    @@media (max-width: 992px) {
+        table thead {
+            display: none;
         }
 
-    .btn-delete {
-        background-color: #dc3545;
-    }
-
-        .btn-delete:hover {
-            background-color: #bd2130;
-            transform: scale(1.05);
+        table, table tbody, table tr, table td {
+            display: block;
+            width: 100%;
         }
+
+            table tr {
+                margin-bottom: 15px;
+                border-radius: 10px;
+                padding: 10px;
+            }
+
+            table td {
+                text-align: left;
+                padding: 10px 15px;
+                position: relative;
+            }
+
+                table td::before {
+                    content: attr(data-label);
+                    font-weight: 600;
+                    display: block;
+                    margin-bottom: 4px;
+                    color: #6c757d;
+                }
+    }
 </style>
-<div class="container mt-5">
+
+<div class="container mt-5 fade-in-page">
     <div class="card">
         <div class="card-header">User List</div>
         <div class="card-body">
             <div class="table-responsive">
-                <input type="hidden" />
-                <table class="table table-bordered table-hover align-middle text-center mb-0">
-                    <thead class="table-light">
+                <table class="table align-middle text-center mb-0">
+                    <thead>
                         <tr>
                             <th>User Name</th>
                             <th>Email</th>
@@ -91,48 +167,38 @@
                             <th>IsActive</th>
                             <th>Created Date</th>
                             <th>Modified Date</th>
-                            @* <th>Actions</th> *@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Example static row -->
-                        @foreach (var userinfo in Model)
+                        @if (Model != null && Model.Any())
                         {
-                            <tr>
-                                <td>@userinfo.userName</td>
-                                <td>@userinfo.email</td>
-                                <td>@userinfo.phoneNumber</td>
-                                <td>
-                                    @if (userinfo.isActive == 1)
-                                    {
-                                        <span class="badge-active">Active</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge-inactive">Inactive</span>
-                                    }
-                                </td>
-                                <td>@userinfo.createdDate</td>
-                                <td>@userinfo.modifiedDate</td>
-                               @*  <td>
-                                    @{
-                                        if (userinfo.UserId == ViewBag.userId)
+                            var index = 0;
+                            foreach (var userinfo in Model)
+                            {
+                                <tr style="animation-delay:@(index * 0.15)s">
+                                    <td data-label="User Name">@userinfo.userName</td>
+                                    <td data-label="Email">@userinfo.email</td>
+                                    <td data-label="Mobile No.">@userinfo.phoneNumber</td>
+                                    <td data-label="Status">
+                                        @if (userinfo.isActive == 1)
                                         {
-                                            <a asp-controller="User" asp-action="EditUser" asp-route-userId="@userinfo.UserId" class="action-btn btn-edit">
-                                                <i class="fas fa-pen-to-square"></i>
-                                            </a>
-                                            <a asp-controller="User" asp-action="DeleteUser" asp-route-userId="@userinfo.UserId" class="action-btn btn-delete">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
+                                            <span class="badge-active">Active</span>
                                         }
-                                    }
-                                </td> *@
-                            </tr>
+                                        else
+                                        {
+                                            <span class="badge-inactive">Inactive</span>
+                                        }
+                                    </td>
+                                    <td data-label="Created Date">@userinfo.createdDate</td>
+                                    <td data-label="Modified Date">@userinfo.modifiedDate</td>
+                                </tr>
+                                index++;
+                            }
                         }
-                        @if (!Model.Any())
+                        else
                         {
                             <tr>
-                                <td colspan="10" class="text-muted text-center">No Departments available.</td>
+                                <td colspan="7" class="text-muted text-center">No Users available.</td>
                             </tr>
                         }
                     </tbody>
