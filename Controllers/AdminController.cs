@@ -1,5 +1,6 @@
 ﻿using Hospital_Management_System.Classes;
 using Hospital_Management_System.Models;
+using Hospital_Management_System.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +11,10 @@ namespace Hospital_Management_System.Controllers
 {
     public class AdminController : Controller
     {
+        ManageAdmin manageAdmin = new ManageAdmin();
+        ManageUser manageUser = new ManageUser();
+        MailService mailService = new MailService();
+
         [AllowAnonymous]
         public IActionResult Login()
         {
@@ -27,14 +32,13 @@ namespace Hospital_Management_System.Controllers
         [AllowAnonymous]
         public IActionResult Login(Admin admin)
         {
-            LoginMethod dataBase_Method = new LoginMethod();
-            SqlDataReader reader = dataBase_Method.Check_Login(admin.userName!, admin.password!);
+            SqlDataReader reader = manageAdmin.Check_Login(admin.userName!, admin.password!);
             if (reader.Read())
             {
                 var UserName = reader["UserName"].ToString() ?? "";
                 HttpContext.Session.SetString("username", UserName);
                 HttpContext.Session.SetInt32("UserId", Convert.ToInt32(reader["UserId"]));
-                return RedirectToAction("Dashboard","Dashboard");
+                return RedirectToAction("Dashboard", "Dashboard");
             }
             else
             {
@@ -46,7 +50,85 @@ namespace Hospital_Management_System.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Login","Admin");
+            return RedirectToAction("Login", "Admin");
+        }
+
+        [AllowAnonymous]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public IActionResult ForgetPassword(Admin admin, string actionStep)
+        {
+            // Get user by email
+            var userlist = manageUser.getUserList();
+            var user = userlist.Find(u => u.email == admin.email);
+
+            if (user == null)
+            {
+                TempData["AdminMessage"] = "Email does not exist.";
+                return View();
+            }
+
+            if (actionStep == "sendOTP")
+            {
+                int otp = manageAdmin.GenerateOTP(admin.email!);
+
+                string subject = "Your OTP for Password Reset";
+                string body = $"<p>Hello {user.userName},</p><p>Your OTP for password reset is: <strong>{otp}</strong> OTP Valid For 5 Minutes</p>";
+
+                bool isSent = mailService.SendMail(admin.email!, subject, body);
+
+                if (isSent)
+                {
+                    TempData["AdminMessage"] = "OTP sent successfully. Please check your email.";
+                    TempData["ShowOTPSection"] = true; 
+                }
+                else
+                {
+                    TempData["AdminMessage"] = "Failed to send OTP. Try again later.";
+                }
+            }
+            else if (actionStep == "verifyOTP")
+            {
+                if (manageAdmin.VerifyOTP(admin.email!, admin.OTP))
+                {
+                    TempData["AdminMessage"] = "OTP verified successfully. You can now reset your password.";
+                    TempData["ShowResetSection"] = true; 
+                }
+                else
+                {
+                    TempData["AdminMessage"] = "Invalid or expired OTP. Please try again.";
+                    TempData["ShowOTPSection"] = true; 
+                }
+            }
+            else if (actionStep == "resetPassword")
+            {
+                if (admin.newPassword != admin.confirmNewPassword)
+                {
+                    TempData["AdminMessage"] = "Passwords do not match.";
+                    TempData["ShowResetSection"] = true;
+                }
+                else
+                {
+                    bool updated = manageAdmin.UpdatePassword(admin.email!, admin.newPassword!);
+                    if (updated)
+                    {
+                        TempData["AdminMessage"] = "Password updated successfully. You can now login.";
+                        return RedirectToAction("Login", "Admin");
+                    }
+                    else
+                    {
+                        TempData["AdminMessage"] = "Failed to update password. Try again.";
+                        TempData["ShowResetSection"] = true;
+                    }
+                }
+            }
+
+            return View();
         }
     }
 }
