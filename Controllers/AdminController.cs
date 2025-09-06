@@ -25,10 +25,10 @@ namespace Hospital_Management_System.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public IActionResult Login(string email, string password)
+        public IActionResult Login(Admin admin)
         {
             LoginMethod dataBase_Method = new LoginMethod();
-            SqlDataReader reader = dataBase_Method.Check_Login(email, password);
+            SqlDataReader reader = dataBase_Method.Check_Login(admin.userName!, admin.password!);
             if (reader.Read())
             {
                 var UserName = reader["UserName"].ToString() ?? "";

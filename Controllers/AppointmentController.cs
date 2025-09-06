@@ -80,6 +80,11 @@ namespace Hospital_Management_System.Controllers
                 return RedirectToAction("selectAllAppointment", "Appointment");
             }
 
+            if (appointment.AppointmentStatus == "complete")
+            {
+                return RedirectToAction("selectAllAppointment");
+            }
+
             ViewBag.PatientList = manageAppointment.getPatientName();
             ViewBag.DepartmentList = manageAppointment.getDepartmentList();
             ViewBag.DoctorList = manageAppointment.getDoctorByDepartment(appointment.DepartmentId);

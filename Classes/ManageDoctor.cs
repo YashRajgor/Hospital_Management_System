@@ -9,7 +9,6 @@ namespace Hospital_Management_System.Classes
     public class ManageDoctor
     {
         DBHelper dbHelper;
-        //SqlConnection? connection = null;
         public ManageDoctor()
         {
             dbHelper = new DBHelper();
@@ -70,9 +69,12 @@ namespace Hospital_Management_System.Classes
                 doctor.created = Convert.ToDateTime(reader["Created"]);
                 doctor.Modified = Convert.ToDateTime(reader["Modified"]);
                 doctor.usedName = reader["UserName"].ToString();
+
+                doctor.doctorDepartments = getDoctorSelectDepartmentId(doctor.doctorId);
                 DoctorController.doctorsList.Add(doctor);
             }
 
+            reader.Close();
             return DoctorController.doctorsList;
         }
 
@@ -138,6 +140,8 @@ namespace Hospital_Management_System.Classes
                     Text = reader["DepartmentName"].ToString()
                 });
             }
+
+            reader.Close();
             return departmentList;
         } 
         #endregion

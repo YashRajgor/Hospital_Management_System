@@ -1,21 +1,36 @@
-﻿@{
+﻿@model Admin;
+
+@{
     Layout = null;
+    <partial name="_ValidationScriptsPartial" />
 }
 <div>
     <style>
         body {
             background-color: #f4f7fe;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
         }
 
+        /* Animation container */
         .login-container {
             max-width: 400px;
-            margin: 80px auto;
+            width: 100%;
             background: white;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeSlideIn 1s ease forwards;
         }
 
+        /* Header with animation */
         .header {
             background-color: #2b8eff;
             color: white;
@@ -23,39 +38,99 @@
             text-align: center;
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
+            opacity: 0;
+            transform: translateY(-20px);
+            animation: fadeDown 0.8s ease forwards 0.3s;
         }
 
+        /* Input placeholders */
         .form-control::placeholder {
             font-size: 0.9rem;
         }
 
+        /* Password toggle */
         .toggle-password {
             cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+            .toggle-password:hover {
+                transform: scale(1.2);
+            }
+
+        /* Button animation */
+        .btn-primary {
+            background: #2b8eff;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background: #0066cc;
+                transform: scale(1.05);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            }
+
+        /* Keyframes */
+        @@keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-    <div class="login-container shadow-sm">
+
+    <div class="login-container">
         <div class="header">
             <h4 class="mb-0">Hospital Management System</h4>
         </div>
         <div class="p-4">
             <h5 class="text-center mb-3">Sign In</h5>
-            <form method="post">
+            <form method="post" asp-action="Login" asp-controller="Admin">
                 <div class="mb-3">
-                    <label class="form-label">Email address</label>
-                    <input type="text" class="form-control" name="email" placeholder="Enter your email" required />
+                    <label asp-for="userName" class="form-label fw-semibold">
+                        Login with <span class="text-primary">Email</span>, <span class="text-primary">Phone Number</span> or <span class="text-primary">Username</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light">
+                            <i class="fas fa-user text-secondary"></i>
+                        </span>
+                        <input type="text" asp-for="userName" class="form-control" placeholder="Enter email, phone number, or username" />
+                    </div>
+                    <span asp-validation-for="userName" class="text-danger small"></span>
                 </div>
+
                 <div class="mb-3">
                     <label class="form-label d-flex justify-content-between">
                         <span>Password</span>
                         <a href="#" class="small">Forgot your password?</a>
                     </label>
                     <div class="input-group">
-                        <input type="password" class="form-control" name="password" id="password" placeholder="Enter your password" required />
+                        <input type="password" asp-for="password" class="form-control" placeholder="Enter your password" />
                         <span class="input-group-text toggle-password" onclick="togglePassword()">👁️</span>
                     </div>
+                    <span asp-validation-for="password" class="text-danger small"></span>
                 </div>
                 <div class="d-grid">
                     <button type="submit" class="btn btn-primary">Log In</button>
@@ -63,7 +138,6 @@
             </form>
             <div class="text-center mt-3">
                 <small><span class="text-danger">@TempData["Message"]</span></small><br />
-                <small>Don’t have an account? <a href="#">Sign Up</a></small>
             </div>
         </div>
     </div>

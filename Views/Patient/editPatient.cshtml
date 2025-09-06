@@ -207,8 +207,9 @@
                     <span asp-validation-for="ImageFile" class="text-danger"></span>
                 </div>
 
-                <div class="d-grid">
+                <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Update Patient</button>
+                    <a asp-controller="Patient" asp-action="selectAllPatient" class="btn btn-secondary">Back</a>
                 </div>
             </form>
 

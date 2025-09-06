@@ -146,8 +146,9 @@
                 <label class="form-check-label" for="IsActive">Is Active</label>
             </div>
 
-            <div class="d-grid">
+            <div class="d-flex gap-2">
                 <button type="submit" class="btn btn-primary">Update Department</button>
+                <a asp-controller="Department" asp-action="ManageDepartment" class="btn btn-secondary">Back</a>
             </div>
 
             @if (TempData["alert"]?.ToString() == "Exists")

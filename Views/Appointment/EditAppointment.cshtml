@@ -116,14 +116,6 @@
                                value="@Model.AppointmentDate.ToString("yyyy-MM-ddTHH:mm")" />
                         <span asp-validation-for="AppointmentDate" class="text-danger"></span>
                     </div>
-                   @*  <div class="col-md-6">
-                        <label class="form-label">Patient</label>
-                        <select asp-for="PatientId" class="form-select"
-                                asp-items="@(new SelectList(ViewBag.PatientList, "patientId", "PatientName", Model.PatientId))">
-                            <option value="">-- Select Patient --</option>
-                        </select>
-                        <span asp-validation-for="PatientId" class="text-danger"></span>
-                    </div> *@
                 </div>
 
                 <div class="row mb-3">
@@ -177,6 +169,7 @@
 
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary">Update Appointment</button>
+                    <a asp-controller="Appointment" asp-action="selectAllAppointment" class="btn btn-secondary">Back</a>
                 </div>
                 <br />
                 <!-- Alert Messages -->

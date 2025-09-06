@@ -23,5 +23,7 @@ namespace Hospital_Management_System.Models
         public DateTime Modified { get; set; }
         public int usedId {  get; set; }
         public string? usedName {  get; set; }
+
+        public List<Department> doctorDepartments { get; set; } = new List<Department>();
     }
 }
