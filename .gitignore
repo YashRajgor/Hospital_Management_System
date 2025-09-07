@@ -5,7 +5,6 @@
 
 #Services 
 Services/MailService.cs
-./Services/MailService.cs
 
 # User-specific files
 *.rsuser
