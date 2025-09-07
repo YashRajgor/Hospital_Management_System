@@ -191,6 +191,10 @@
 </style>
 
 <div class="container mt-5 fade-in-page">
+    @if (TempData["Message"]?.ToString() == "error")
+    {
+        <div class="alert alert-danger">Error during doctor delete</div>
+    }
     <div class="card">
         <div class="card-header"><i class="fas fa-user-md me-2"></i> Doctor List</div>
         <div class="card-body">

@@ -9,8 +9,16 @@ namespace Hospital_Management_System.Controllers
         ManageDashboard manageDashboard = new ManageDashboard();
         public IActionResult Dashboard()
         {
-            Dashboard model = manageDashboard.GetDashboardCounts();
-            return View(model);
+            try
+            {
+                Dashboard model = manageDashboard.GetDashboardCounts();
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return View(new Dashboard());
+            }
         }
     }
 }

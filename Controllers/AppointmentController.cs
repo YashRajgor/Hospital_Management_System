@@ -10,129 +10,190 @@ namespace Hospital_Management_System.Controllers
         List<string> status = new List<string> { "pending", "process", "complete" };
         ManageAppointment manageAppointment = new ManageAppointment();
         int? userId;
+
         public IActionResult AddAppointment()
         {
-            ViewBag.PatientList = manageAppointment.getPatientName();
-            ViewBag.DepartmentList = manageAppointment.getDepartmentList();
-            return View();
+            try
+            {
+                ViewBag.PatientList = manageAppointment.getPatientName();
+                ViewBag.DepartmentList = manageAppointment.getDepartmentList();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                TempData["AppointmentMessage"] = "error";
+                Console.WriteLine(ex);
+                return View();
+            }
         }
 
         [HttpGet]
         public JsonResult GetDoctorsByDepartment(int departmentId)
         {
-            var doctors = manageAppointment.getDoctorByDepartment(departmentId)
-                .Select(d => new
-                {
-                    doctorId = d.doctorId,
-                    doctorName = d.doctorName
-                }).ToList();
+            try
+            {
+                var doctors = manageAppointment.getDoctorByDepartment(departmentId)
+                    .Select(d => new
+                    {
+                        doctorId = d.doctorId,
+                        doctorName = d.doctorName
+                    }).ToList();
 
-            return Json(doctors);
+                return Json(doctors);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = "An error occurred: " + ex.Message });
+            }
         }
-
 
         [HttpPost]
         public IActionResult AddAppointment(Appointment appointment)
         {
-            userId = HttpContext.Session.GetInt32("UserId");
-
-            bool exists = appointments.Any(a =>
-                a.DoctorId == appointment.DoctorId &&
-                a.DepartmentId == appointment.DepartmentId &&
-                a.AppointmentDate == appointment.AppointmentDate);
-
-            if (exists)
+            try
             {
-                TempData["AppointmentMessage"] = "Exists";
-            }
-            else
-            {
-                int result = manageAppointment.addAppointment(appointment, (int)userId!);
+                userId = HttpContext.Session.GetInt32("UserId");
 
-                if (result > 0)
+                bool exists = appointments.Any(a =>
+                    a.DoctorId == appointment.DoctorId &&
+                    a.DepartmentId == appointment.DepartmentId &&
+                    a.AppointmentDate == appointment.AppointmentDate);
+
+                if (exists)
                 {
-                    appointments.Add(appointment);
-                    TempData["AppointmentMessage"] = "Success";
+                    TempData["AppointmentMessage"] = "Exists";
                 }
                 else
                 {
-                    TempData["AppointmentMessage"] = "Fail";
+                    int result = manageAppointment.addAppointment(appointment, (int)userId!);
+
+                    if (result > 0)
+                    {
+                        appointments.Add(appointment);
+                        TempData["AppointmentMessage"] = "Success";
+                    }
+                    else
+                    {
+                        TempData["AppointmentMessage"] = "Fail";
+                    }
                 }
+
+                ViewBag.PatientList = manageAppointment.getPatientName();
+                ViewBag.DepartmentList = manageAppointment.getDepartmentList();
+
+                return View();
             }
-
-            ViewBag.PatientList = manageAppointment.getPatientName();
-            ViewBag.DepartmentList = manageAppointment.getDepartmentList();
-
-            return View();
+            catch (Exception ex)
+            {
+                TempData["AppointmentMessage"] = "error";
+                Console.WriteLine(ex);
+                return View();
+            }
         }
 
         public IActionResult selectAllAppointment()
         {
-            var appointmentData = manageAppointment.selectAllAppointment();
-            return View(appointmentData);
+            try
+            {
+                var appointmentData = manageAppointment.selectAllAppointment();
+                return View(appointmentData);
+            }
+            catch (Exception ex)
+            {
+                TempData["AppointmentMessage"] = "An error occurred: " + ex.Message;
+                return View(new List<Appointment>());
+            }
         }
 
         public IActionResult EditAppointment(int appointmentId)
         {
-            Appointment? appointment = appointments.Find(a => a.AppointmentId == appointmentId);
-            if (appointment == null)
+            try
             {
-                return RedirectToAction("selectAllAppointment", "Appointment");
-            }
+                Appointment? appointment = appointments.Find(a => a.AppointmentId == appointmentId);
+                if (appointment == null)
+                {
+                    return RedirectToAction("selectAllAppointment", "Appointment");
+                }
 
-            if (appointment.AppointmentStatus == "complete")
+                if (appointment.AppointmentStatus == "complete")
+                {
+                    return RedirectToAction("selectAllAppointment");
+                }
+
+                ViewBag.PatientList = manageAppointment.getPatientName();
+                ViewBag.DepartmentList = manageAppointment.getDepartmentList();
+                ViewBag.DoctorList = manageAppointment.getDoctorByDepartment(appointment.DepartmentId);
+
+                ViewBag.StatusList = status;
+                return View(appointment);
+            }
+            catch (Exception ex)
             {
+                TempData["AppointmentMessage"] = "error";
+                Console.WriteLine(ex);
                 return RedirectToAction("selectAllAppointment");
             }
-
-            ViewBag.PatientList = manageAppointment.getPatientName();
-            ViewBag.DepartmentList = manageAppointment.getDepartmentList();
-            ViewBag.DoctorList = manageAppointment.getDoctorByDepartment(appointment.DepartmentId);
-
-            ViewBag.StatusList = status;
-            return View(appointment);
         }
 
         [HttpPost]
         public IActionResult EditAppointment(Appointment appointment)
         {
-            userId = HttpContext.Session.GetInt32("UserId");
-
-            bool exists = appointments.Any(a =>
-               a.DoctorId == appointment.DoctorId &&
-               a.DepartmentId == appointment.DepartmentId &&
-               a.AppointmentDate == appointment.AppointmentDate &&
-               a.AppointmentId!=appointment.AppointmentId);
-
-            if (exists)
+            try
             {
-                TempData["AppointmentMessage"] = "Exists";
-            }
-            else
-            {
-                int result = manageAppointment.updateAppointment(appointment, (int)userId!);
+                userId = HttpContext.Session.GetInt32("UserId");
 
-                if(result>0)
+                bool exists = appointments.Any(a =>
+                   a.DoctorId == appointment.DoctorId &&
+                   a.DepartmentId == appointment.DepartmentId &&
+                   a.AppointmentDate == appointment.AppointmentDate &&
+                   a.AppointmentId != appointment.AppointmentId);
+
+                if (exists)
                 {
-                    return RedirectToAction("selectAllAppointment");
+                    TempData["AppointmentMessage"] = "Exists";
                 }
                 else
                 {
-                    TempData["AppointmentMessage"] = "Fail";
+                    int result = manageAppointment.updateAppointment(appointment, (int)userId!);
+
+                    if (result > 0)
+                    {
+                        return RedirectToAction("selectAllAppointment");
+                    }
+                    else
+                    {
+                        TempData["AppointmentMessage"] = "Fail";
+                    }
                 }
+
+                ViewBag.PatientList = manageAppointment.getPatientName();
+                ViewBag.DepartmentList = manageAppointment.getDepartmentList();
+                ViewBag.DoctorList = manageAppointment.getDoctorByDepartment(appointment.DepartmentId);
+                ViewBag.StatusList = status;
+
+                return View(appointment);
             }
-
-            ViewBag.PatientList = manageAppointment.getPatientName();
-            ViewBag.DepartmentList = manageAppointment.getDepartmentList();
-            ViewBag.DoctorList = manageAppointment.getDoctorByDepartment(appointment.DepartmentId);
-            ViewBag.StatusList = status;
-
-            return View(appointment);
+            catch (Exception ex)
+            {
+                TempData["AppointmentMessage"] = "error";
+                Console.WriteLine(ex);
+                return View(appointment);
+            }
         }
+
         public IActionResult DeleteAppointment(int appointmentId)
         {
-            int result=manageAppointment.deleteAppointment(appointmentId);
-            return RedirectToAction("selectAllAppointment");
+            try
+            {
+                int result = manageAppointment.deleteAppointment(appointmentId);
+                return RedirectToAction("selectAllAppointment");
+            }
+            catch (Exception ex)
+            {
+                TempData["AppointmentMessage"] = "error";
+                Console.WriteLine(ex);
+                return RedirectToAction("selectAllAppointment");
+            }
         }
     }
 }

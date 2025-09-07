@@ -176,6 +176,10 @@
                     {
                         <div class="alert alert-danger">Doctor Not Found</div>
                     }
+                    else if (TempData["Message"]?.ToString() == "error")
+                    {
+                        <div class="alert alert-danger">Error during doctor insert</div>
+                    }
                 </div>
             }
         </div>

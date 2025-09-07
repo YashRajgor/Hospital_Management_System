@@ -181,6 +181,10 @@
                     {
                         <div class="alert alert-warning">Patient already exists.</div>
                     }
+                    else if (TempData["PatientMessage"]?.ToString() == "error")
+                    {
+                        <div class="alert alert-danger">Error during Patient Insert.</div>
+                    }
                 </div>
             }
         </div>

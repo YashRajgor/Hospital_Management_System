@@ -178,6 +178,10 @@
 </style>
 
 <div class="container mt-5 fade-in-page">
+    @if (TempData["PatientMessage"]?.ToString() == "error")
+    {
+        <div class="alert alert-danger">Error during Patient Delete.</div>
+    }
     <div class="card">
         <div class="card-header">Patient List</div>
         <div class="card-body">
@@ -201,7 +205,7 @@
                     <tbody>
                         @if (Model != null && Model.Any())
                         {
-                            var index = 0; 
+                            var index = 0;
                             foreach (var patient in Model)
                             {
                                 <tr style="animation-delay:@(index * 0.15)s">
@@ -233,7 +237,7 @@
                                         </a>
                                     </td>
                                 </tr>
-                                index++; 
+                                index++;
                             }
                         }
                         else

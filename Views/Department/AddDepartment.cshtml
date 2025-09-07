@@ -162,7 +162,11 @@
                     }
                     else if (TempData["Message"]?.ToString() == "failed")
                     {
-                        <div class="alert alert-danger">Department not inserted.</div>
+                        <div class="alert alert-danger">Department not insert.</div>
+                    }
+                    else if (TempData["Message"]?.ToString() == "error")
+                    {
+                        <div class="alert alert-danger">Error occure during department insert</div>
                     }
                 </div>
             </form>

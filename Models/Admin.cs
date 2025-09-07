@@ -22,7 +22,7 @@ namespace Hospital_Management_System.Models
         public string? newPassword { get; set; }
 
         [Required]
-        [Compare(nameof(newPassword), ErrorMessage = "Passwords do not match")]
+        [Compare(nameof(newPassword), ErrorMessage = "Passwords not match")]
         public string? confirmNewPassword { get; set; }
     }
 }

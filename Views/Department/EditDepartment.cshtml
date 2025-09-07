@@ -155,10 +155,10 @@
             {
                 <div class="alert alert-warning">Department Already Exists</div>
             }
-           @*  else if (TempData["Message"] == "error")
+           else if (TempData["Message"]?.ToString() == "error")
             {
                 <div class="alert alert-danger">Department Not Updated</div>
-            } *@
+            }
         </form>
     </div>
 </div>

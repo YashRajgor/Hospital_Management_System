@@ -12,42 +12,65 @@ namespace Hospital_Management_System.Controllers
         int? userId;
         public IActionResult AddDepartment()
         {
-            if (HttpContext.Session.GetString("username") == null)
+            try
             {
-                return RedirectToAction("Login","Admin");
-            }
-            else
-            {
+                if (HttpContext.Session.GetString("username") == null)
+                {
+                    return RedirectToAction("Login", "Admin");
+                }
                 return View();
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "error";
+                Console.WriteLine(ex);
+                return RedirectToAction("ManageDepartment");
             }
         }
 
         [HttpPost]
         public IActionResult AddDepartment(Department department)
         {
-            userId = HttpContext.Session.GetInt32("UserId");
+            try
+            {
 
-            int reader = manageDepartment.Add_Department(department, DateTime.Now, (int)userId!);
-            if (reader == 2)
-            {
-                TempData["Message"] = "Exists";
+
+                userId = HttpContext.Session.GetInt32("UserId");
+
+                int reader = manageDepartment.Add_Department(department, DateTime.Now, (int)userId!);
+                if (reader == 2)
+                {
+                    TempData["Message"] = "Exists";
+                }
+                else if (reader == 1)
+                {
+                    TempData["Message"] = "Sussfully";
+                }
+                else
+                {
+                    TempData["Message"] = "failed";
+                }
             }
-            else if (reader == 1)
+            catch (Exception ex)
             {
-                TempData["Message"] = "Sussfully";
-            }
-            else
-            {
-                TempData["Message"] = "failed";
+                TempData["Message"] = "error";
+                Console.WriteLine(ex);
             }
             return View();
         }
 
         public IActionResult ManageDepartment()
         {
-            var dataRead = manageDepartment.getAllDepartment();
-
-            return View(dataRead);
+            try
+            {
+                var dataRead = manageDepartment.getAllDepartment();
+                return View(dataRead);
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "Error loading departments: " + ex.Message;
+                return View(new List<Department>());
+            }
         }
 
 
@@ -59,45 +82,64 @@ namespace Hospital_Management_System.Controllers
             }
             catch (Exception ex)
             {
-                TempData["DeleteMessage"] = "Error"+ex;
+                TempData["DeleteMessage"] = "Error" + ex;
             }
-            return RedirectToAction("ManageDepartment","Department");
+            return RedirectToAction("ManageDepartment", "Department");
         }
 
         public IActionResult EditDepartment(int departmentId)
         {
-            Department? obj = departmentList.Find(i => i.departmentId == departmentId);
-            if (obj == null)
+            try
             {
-                return RedirectToAction("ManageDepartment","Department");
+                Department? obj = departmentList.Find(i => i.departmentId == departmentId);
+                if (obj == null)
+                {
+                    TempData["Message"] = "error";
+                    return RedirectToAction("ManageDepartment", "Department");
+                }
+                HttpContext.Session.SetInt32("deptId", obj.departmentId);
+                HttpContext.Session.SetString("deptName", obj.DepartmentName!);
+                return View(obj);
             }
-            HttpContext.Session.SetInt32("deptId", obj.departmentId);
-            HttpContext.Session.SetString("deptName", obj.DepartmentName!);
-            return View(obj);
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return RedirectToAction("ManageDepartment", "Department");
+            }
         }
 
         [HttpPost]
         public IActionResult EditDepartment(Department department)
         {
-            Department? obj = departmentList.Find(i => i.departmentId == department.departmentId);
-            userId = HttpContext.Session.GetInt32("UserId");
-            int result = manageDepartment.check_Department_Before_update(department);
+            try
+            {
+                Department? obj = departmentList.Find(i => i.departmentId == department.departmentId);
+                userId = HttpContext.Session.GetInt32("UserId");
 
-            if (result == 1)
-            {
-                TempData["alert"] = "Exists";
-                return View(obj);
-            }
-            else
-            {
-                result = manageDepartment.update_Department(department, (int)userId!);
+                int result = manageDepartment.check_Department_Before_update(department);
 
                 if (result == 1)
                 {
-                    return RedirectToAction("ManageDepartment","Department");
+                    TempData["alert"] = "Exists";
+                    return View(obj);
                 }
-                TempData["error"] = "Error In Department Update";
-                return RedirectToAction("EditDepartment", "Department", obj);
+                else
+                {
+                    result = manageDepartment.update_Department(department, (int)userId!);
+
+                    if (result == 1)
+                    {
+                        return RedirectToAction("ManageDepartment", "Department");
+                    }
+                    TempData["Message"] = "error";
+                    return RedirectToAction("EditDepartment", "Department", obj);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "error";
+                Console.WriteLine(ex);
+                return RedirectToAction("ManageDepartment", "Department");
             }
         }
     }

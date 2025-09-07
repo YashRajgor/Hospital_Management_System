@@ -190,6 +190,12 @@
 </style>
 
 <div class="container mt-5 fade-in-page">
+    <div>
+        @if (TempData["AppointmentMessage"]?.ToString() == "error")
+        {
+            <div class="alert alert-danger">Error occure in appointment.</div>
+        }
+    </div>
     <div class="card">
         <div class="card-header">
             <i class="fas fa-calendar-check me-2"></i> Appointment List

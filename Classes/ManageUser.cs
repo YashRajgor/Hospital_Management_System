@@ -28,7 +28,7 @@ namespace Hospital_Management_System.Classes
                 new SqlParameter("@number",user.phoneNumber),
             };
 
-            int result=dbHelper.ExecuteNonQuery("SP_Add_User", parameter);
+            int result = dbHelper.ExecuteNonQuery("SP_Add_User", parameter);
 
             if (result > 0)
             {
@@ -41,9 +41,7 @@ namespace Hospital_Management_System.Classes
 
                 mailService.SendMail(user.email!, subject, body);
             }
-
             return result;
-
         }
 
         public int checkUserExitsOrNot(User user)
@@ -57,7 +55,7 @@ namespace Hospital_Management_System.Classes
 
             SqlDataReader reader = dbHelper.ExecuteReader("SP_Check_User", parameter);
 
-            if(reader.HasRows)
+            if (reader.HasRows)
             {
                 reader.Close();
                 return 1;
@@ -73,12 +71,12 @@ namespace Hospital_Management_System.Classes
             UserController.userList.Clear();
             SqlDataReader reader = dbHelper.ExecuteReader("SP_Select_All_User");
 
-            while(reader.Read())
+            while (reader.Read())
             {
-                user=new User();
+                user = new User();
                 user.UserId = Convert.ToInt32(reader["UserId"]);
-                user.userName = reader["UserName"].ToString()??"";
-                user.password = reader["password"].ToString() ??"";
+                user.userName = reader["UserName"].ToString() ?? "";
+                user.password = reader["password"].ToString() ?? "";
                 user.email = reader["Email"].ToString() ?? "";
                 user.phoneNumber = reader["MobileNo"].ToString() ?? "";
                 user.isActive = Convert.ToInt32(reader["IsActive"]);
@@ -97,7 +95,7 @@ namespace Hospital_Management_System.Classes
                 new SqlParameter("@userId",userId)
             };
 
-            return dbHelper.ExecuteNonQuery("SP_Delete_User",parameter);
+            return dbHelper.ExecuteNonQuery("SP_Delete_User", parameter);
         }
 
         public int checkUserBeforeUpdate(User user)
@@ -113,7 +111,7 @@ namespace Hospital_Management_System.Classes
 
             SqlDataReader reader = dbHelper.ExecuteReader("SP_Check_User", parameter);
 
-            if(reader.HasRows)
+            if (reader.HasRows)
             {
                 reader.Close();
                 return 1;

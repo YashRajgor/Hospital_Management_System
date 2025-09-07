@@ -172,6 +172,10 @@
                     {
                         <div class="alert alert-danger">Appointment not inserted.</div>
                     }
+                    else if (TempData["AppointmentMessage"]?.ToString() == "error")
+                    {
+                        <div class="alert alert-danger">Error occure during add appointment.</div>
+                    }
                 </div>
             </form>
         </div>

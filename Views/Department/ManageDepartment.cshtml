@@ -180,19 +180,17 @@
     }
 </style>
 
-@* TempData Message *@
-@{
-    if (TempData["DeleteMessage"] != null)
-    {
-        <div class="mt-4 feedback-message">
-            <div class="alert alert-danger shadow-sm" role="alert">
-                Error During Delete Department
-            </div>
-        </div>
-    }
-}
-
 <div class="container mt-5 fade-in-page">
+    @{
+        if (TempData["DeleteMessage"] != null)
+        {
+            <div class="mt-4 feedback-message">
+                <div class="alert alert-danger shadow-sm" role="alert">
+                    Error During Delete Department
+                </div>
+            </div>
+        }
+    }
     <div class="card">
         <div class="card-header"><i class="fas fa-building me-2"></i> Department List</div>
         <div class="card-body">

@@ -17,163 +17,215 @@ namespace Hospital_Management_System.Controllers
 
         public IActionResult addDoctor()
         {
-            ViewBag.DepartmentList = manageDoctor.getDepartmentName();
-            return View();
+            try
+            {
+                ViewBag.DepartmentList = manageDoctor.getDepartmentName();
+                return View();
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "error";
+                Console.WriteLine(ex);
+                return View();
+            }
         }
         public IActionResult SelectAllDoctor()
         {
-            var datareader = manageDoctor.select_All_Doctor();
-            return View(datareader);
+            try
+            {
+                var datareader = manageDoctor.select_All_Doctor();
+                return View(datareader);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return View(new List<Doctor>());
+            }
         }
 
         [HttpPost]
         public IActionResult addDoctor(Doctor doctor, List<string> SelectedDepartments)
         {
-            userId = HttpContext.Session.GetInt32("UserId");
-            int check = manageDoctor.check_Befor_Insert(doctor.doctorName!);
-
-            if (check > 0)
+            try
             {
-                TempData["Message"] = "Exists";
-            }
-            else
-            {
-                int result = manageDoctor.addDoctor(doctor, (int)userId!);
+                userId = HttpContext.Session.GetInt32("UserId");
+                int check = manageDoctor.check_Befor_Insert(doctor.doctorName!);
 
-                int id = manageDoctor.getDoctorId(doctor.doctorName!);
-
-                if (id > 0 && SelectedDepartments.Count > 0)
+                if (check > 0)
                 {
-                    if (SelectedDepartments.Count > 0)
+                    TempData["Message"] = "Exists";
+                }
+                else
+                {
+                    int result = manageDoctor.addDoctor(doctor, (int)userId!);
+
+                    int id = manageDoctor.getDoctorId(doctor.doctorName!);
+
+                    if (id > 0 && SelectedDepartments.Count > 0)
                     {
-                        foreach (var deptId in SelectedDepartments)
+                        if (SelectedDepartments.Count > 0)
                         {
-                            manageDoctor.addDoctorDepartment(id, Convert.ToInt32(deptId), (int)userId);
+                            foreach (var deptId in SelectedDepartments)
+                            {
+                                manageDoctor.addDoctorDepartment(id, Convert.ToInt32(deptId), (int)userId);
+                            }
                         }
                     }
-                }
-                else
-                {
-                    TempData["Message"] = "DoctorNotFound";
+                    else
+                    {
+                        TempData["Message"] = "DoctorNotFound";
+                    }
+
+                    if (result > 0)
+                    {
+                        TempData["Message"] = "Successfull";
+                        return RedirectToAction("addDoctor");
+                    }
+                    else
+                    {
+                        TempData["Message"] = "fail";
+                    }
                 }
 
-                if (result > 0)
-                {
-                    TempData["Message"] = "Successfull";
-                    return RedirectToAction("addDoctor");
-                }
-                else
-                {
-                    TempData["Message"] = "fail";
-                }
+                ViewBag.DepartmentList = manageDoctor.getDepartmentName();
+                return View();
             }
-
-            ViewBag.DepartmentList = manageDoctor.getDepartmentName();
-            return View();
+            catch (Exception ex)
+            {
+                TempData["Message"] = "error";
+                Console.WriteLine(ex);
+                ViewBag.DepartmentList = manageDoctor.getDepartmentName();
+                return View();
+            }
         }
 
         public IActionResult deleteDoctor(int doctorId)
         {
-            int result = manageDoctor.delete_Doctor(doctorId);
-
-            return RedirectToAction("SelectAllDoctor");
+            try
+            {
+                int result = manageDoctor.delete_Doctor(doctorId);
+                return RedirectToAction("SelectAllDoctor");
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = "error";
+                Console.WriteLine(ex);
+                return RedirectToAction("SelectAllDoctor");
+            }
         }
 
         public IActionResult editDoctor(int doctorId)
         {
-            DepartmentIdList.Clear();
-
-            var deptid = new List<int>();
-            HttpContext.Session.SetInt32("Id", doctorId);
-            Doctor obj = manageDoctor.getDoctorById(doctorId);
-
-            if (obj == null)
+            try
             {
-                return RedirectToAction("selectalldoctor");
+                DepartmentIdList.Clear();
+
+                var deptid = new List<int>();
+                HttpContext.Session.SetInt32("Id", doctorId);
+                Doctor obj = manageDoctor.getDoctorById(doctorId);
+
+                if (obj == null)
+                {
+                    return RedirectToAction("selectalldoctor");
+                }
+
+
+                deptid.Clear();
+                var SelecteddepartmentId = manageDoctor.getDoctorSelectDepartmentId(obj.doctorId);
+                var departmentList = manageDepartment.getAllDepartment();
+
+                foreach (var i in SelecteddepartmentId)
+                {
+                    deptid.Add(i.departmentId);
+                }
+
+                ViewBag.SelectedDepartmentId = deptid;
+                ViewBag.DepartmentList = departmentList;
+
+                return View(obj);
             }
-
-
-            deptid.Clear();
-            var SelecteddepartmentId = manageDoctor.getDoctorSelectDepartmentId(obj.doctorId);
-            var departmentList = manageDepartment.getAllDepartment();
-
-            foreach (var i in SelecteddepartmentId)
+            catch (Exception ex)
             {
-                deptid.Add(i.departmentId);
+                TempData["UpdateAlert"] = "error";
+                Console.WriteLine(ex);
+                Doctor obj = manageDoctor.getDoctorById(doctorId);
+                return View(obj);
             }
-
-            ViewBag.SelectedDepartmentId = deptid;
-            ViewBag.DepartmentList = departmentList;
-
-            return View(obj);
         }
-
-        //Doctor obj = doctorsList.Find(Id => Id.doctorId == doctor.doctorId);
 
         [HttpPost]
         public IActionResult editDoctor(Doctor doctor, List<int> SelectedDepartments)
         {
-            userId = HttpContext.Session.GetInt32("UserId");
-            doctorsList.Clear();
-            DepartmentIdList.Clear();
-
-            int? doctorIdFromSession = HttpContext.Session.GetInt32("Id");
-            if (doctorIdFromSession == null)
+            try
             {
-                return RedirectToAction("SelectAllDoctor");
-            }
+                userId = HttpContext.Session.GetInt32("UserId");
+                doctorsList.Clear();
+                DepartmentIdList.Clear();
 
-            // Get fresh doctor details
-            Doctor obj = manageDoctor.getDoctorById(doctor.doctorId);
-
-            // Fetch old department IDs assigned to this doctor
-            var previousDepartmentIds = manageDoctor
-                .getDoctorSelectDepartmentId(doctor.doctorId)
-                .Select(d => d.departmentId)
-                .ToList();
-
-            // Prepare ViewBag for redisplay in case of error
-            ViewBag.DepartmentList = manageDepartment.getAllDepartment();
-            ViewBag.SelectedDepartmentId = SelectedDepartments;
-
-            // Check for duplicate name
-            int nameCheckResult = manageDoctor.check_Doctor_Before_Update(doctor.doctorId, doctor.doctorName!);
-            if (nameCheckResult == 1)
-            {
-                TempData["UpdateAlert"] = "Exists";
-                //return View(obj);
-                return RedirectToAction("editDoctor","Doctor",obj);
-            }
-
-            // Perform update
-            int updateResult = manageDoctor.update_Doctor(doctor, (int)userId!);
-            if (updateResult == 1)
-            {
-                // Get departments to ADD
-                var toAdd = SelectedDepartments.Except(previousDepartmentIds).ToList();
-
-                // Get departments to REMOVE
-                var toRemove = previousDepartmentIds.Except(SelectedDepartments).ToList();
-
-                // Add new departments
-                foreach (var deptId in toAdd)
+                int? doctorIdFromSession = HttpContext.Session.GetInt32("Id");
+                if (doctorIdFromSession == null)
                 {
-                    manageDoctor.addDoctorDepartment(doctor.doctorId, deptId, (int)userId);
+                    return RedirectToAction("SelectAllDoctor");
                 }
 
-                // Remove deselected departments
-                foreach (var deptId in toRemove)
+                // Get fresh doctor details
+                Doctor obj = manageDoctor.getDoctorById(doctor.doctorId);
+
+                // Fetch old department IDs assigned to this doctor
+                var previousDepartmentIds = manageDoctor
+                    .getDoctorSelectDepartmentId(doctor.doctorId)
+                    .Select(d => d.departmentId)
+                    .ToList();
+
+                // Prepare ViewBag for redisplay in case of error
+                ViewBag.DepartmentList = manageDepartment.getAllDepartment();
+                ViewBag.SelectedDepartmentId = SelectedDepartments;
+
+                // Check for duplicate name
+                int nameCheckResult = manageDoctor.check_Doctor_Before_Update(doctor.doctorId, doctor.doctorName!);
+                if (nameCheckResult == 1)
                 {
-                    manageDoctor.deleteDoctorDepartmentById(deptId, doctor.doctorId);
+                    TempData["UpdateAlert"] = "Exists";
+                    //return View(obj);
+                    return RedirectToAction("editDoctor", "Doctor", obj);
                 }
 
-                // Clear session
-                HttpContext.Session.Remove("Id");
+                // Perform update
+                int updateResult = manageDoctor.update_Doctor(doctor, (int)userId!);
+                if (updateResult == 1)
+                {
+                    // Get departments to ADD
+                    var toAdd = SelectedDepartments.Except(previousDepartmentIds).ToList();
+
+                    // Get departments to REMOVE
+                    var toRemove = previousDepartmentIds.Except(SelectedDepartments).ToList();
+
+                    // Add new departments
+                    foreach (var deptId in toAdd)
+                    {
+                        manageDoctor.addDoctorDepartment(doctor.doctorId, deptId, (int)userId);
+                    }
+
+                    // Remove deselected departments
+                    foreach (var deptId in toRemove)
+                    {
+                        manageDoctor.deleteDoctorDepartmentById(deptId, doctor.doctorId);
+                    }
+
+                    // Clear session
+                    HttpContext.Session.Remove("Id");
+                    return RedirectToAction("SelectAllDoctor");
+                }
+
+                TempData["UpdateAlert"] = "error";
+                return View(obj);
+            }
+            catch (Exception ex)
+            {
+                TempData["UpdateAlert"] = "error";
+                Console.WriteLine(ex);
                 return RedirectToAction("SelectAllDoctor");
             }
-
-            TempData["UpdateAlert"] = "Error";
-            return View(obj);
         }
     }
 }

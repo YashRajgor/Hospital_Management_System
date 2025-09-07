@@ -156,7 +156,11 @@
                     }
                     else if (TempData["UserMessage"]?.ToString() == "failed")
                     {
-                        <div class="alert alert-danger">User not inserted.</div>
+                        <div class="alert alert-danger">User not insert.</div>
+                    }
+                    else if (TempData["UserMessage"]?.ToString() == "error")
+                    {
+                        <div class="alert alert-danger">Error during User insert.</div>
                     }
                 </div>
             </form>
