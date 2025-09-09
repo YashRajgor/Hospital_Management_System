@@ -113,7 +113,7 @@
                     <div class="col-md-6">
                         <label class="form-label">Appointment Date & Time</label>
                         <input asp-for="AppointmentDate" type="datetime-local" class="form-control"
-                               value="@Model.AppointmentDate.ToString("yyyy-MM-ddTHH:mm")" />
+                               value="@Model.AppointmentDate.ToString("yyyy-MM-ddTHH:mm")" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
                         <span asp-validation-for="AppointmentDate" class="text-danger"></span>
                     </div>
                 </div>

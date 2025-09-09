@@ -2,8 +2,8 @@
 
 @{
     ViewBag.Title = "Edit Patient";
-    Layout = null;
     <partial name="_ValidationScriptsPartial" />
+    Layout = null;
 }
 
 <!-- Bootstrap & Animate.css -->
@@ -151,7 +151,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">Date of Birth</label>
-                    <input asp-for="dateOfBirth" type="date" class="form-control" />
+                    <input asp-for="dateOfBirth" max="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" type="date" class="form-control" />
                     <span asp-validation-for="dateOfBirth" class="text-danger"></span>
                 </div>
 

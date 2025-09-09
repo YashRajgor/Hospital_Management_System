@@ -110,7 +110,7 @@
 
                 <div class="mb-3">
                     <label class="form-label">Date of Birth</label>
-                    <input asp-for="dateOfBirth" type="date" class="form-control" />
+                    <input asp-for="dateOfBirth" type="date" max="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" class="form-control" />
                     <span asp-validation-for="dateOfBirth" class="text-danger"></span>
                 </div>
 
@@ -157,12 +157,12 @@
 
                 <div class="mb-3">
                     <label class="form-label">Upload Patient Image</label>
-                    <input asp-for="ImageFile" type="file" class="form-control" />
-                    <span asp-validation-for="ImageFile" class="text-danger"></span>
+                    <input asp-for="ImageFile" type="file" class="form-control" id="patientImage" />
+                    <small id="imageError" class="text-danger"></small>
                 </div>
 
                 <div class="d-grid">
-                    <button type="submit" class="btn btn-primary">Add Patient</button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">Add Patient</button>
                 </div>
             </form>
 
@@ -190,3 +190,17 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById("submitBtn").addEventListener("click", function (e) {
+        const imageInput = document.getElementById("patientImage");
+        const errorSpan = document.getElementById("imageError");
+
+        errorSpan.textContent = ""; 
+
+        if (!imageInput.value) {
+            e.preventDefault(); 
+            errorSpan.textContent = "Please upload a patient image.";
+        }
+    });
+</script>

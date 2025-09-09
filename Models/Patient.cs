@@ -24,8 +24,6 @@ namespace Hospital_Management_System.Models
         public DateTime modified { get; set; }
         public string? userName {  get; set; }
         public string? PatientImage { get; set; }
-
-        [RequiredIfNewPatient]
         public IFormFile? ImageFile { get; set; }
         public bool IsNew { get; set; }
     }

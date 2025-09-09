@@ -1,5 +1,6 @@
 ﻿using Hospital_Management_System.Classes;
 using Hospital_Management_System.Models;
+using Hospital_Management_System.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hospital_Management_System.Controllers
@@ -9,6 +10,7 @@ namespace Hospital_Management_System.Controllers
         public static List<Appointment> appointments = new List<Appointment>();
         List<string> status = new List<string> { "pending", "process", "complete" };
         ManageAppointment manageAppointment = new ManageAppointment();
+        MailService mailService = new MailService();
         int? userId;
 
         public IActionResult AddAppointment()
@@ -71,6 +73,35 @@ namespace Hospital_Management_System.Controllers
                     {
                         appointments.Add(appointment);
                         TempData["AppointmentMessage"] = "Success";
+
+                        var patient = manageAppointment
+                            .getPatientName()
+                            .FirstOrDefault(p => p.patientId == appointment.PatientId);
+
+                        var doctor = manageAppointment
+                            .getDoctorByDepartment(appointment.DepartmentId)
+                            .FirstOrDefault(d => d.doctorId == appointment.DoctorId);
+
+                        var department = manageAppointment
+                            .getDepartmentList()
+                            .FirstOrDefault(dep => dep.departmentId == appointment.DepartmentId);
+
+                        string patientEmail = patient?.email ?? "xyz@gmail.com";
+                        string patientName = patient?.PatientName ?? "Unknown Patient";
+                        string doctorName = doctor?.doctorName ?? "Unknown Doctor";
+                        string deptName = department?.DepartmentName ?? "Unknown Department";
+
+                        string subject = "Appointment Confirmation";
+                        string body = $@"
+                        <h3>Dear {patientName},</h3>
+                        <p>Your appointment has been successfully booked.</p>
+                        <p><b>Doctor:</b> {doctorName}</p>
+                        <p><b>Department:</b> {deptName}</p>
+                        <p><b>Date & Time:</b> {appointment.AppointmentDate:dd-MMM-yyyy hh:mm tt}</p>
+                        <br/>
+                        <p>Thank you,<br/>Hospital Management System</p>";
+
+                        mailService.SendMail(patientEmail, subject, body);
                     }
                     else
                     {

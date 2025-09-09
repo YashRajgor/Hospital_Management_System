@@ -43,7 +43,8 @@ namespace Hospital_Management_System.Classes
             {
                 patient = new Patient();
                 patient.patientId = Convert.ToInt32(reader["PatientId"]);
-                patient.PatientName = reader["Name"].ToString() ?? "";
+                patient.PatientName = reader["Name"].ToString();
+                patient.email=reader["Email"].ToString();
                 patientList.Add(patient);
             }
             reader.Close();
