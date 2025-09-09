@@ -126,34 +126,36 @@
     <div class="card shadow-sm" data-aos="fade-up">
         <div class="card-body">
             <h5 class="fw-bold mb-3">Latest Appointments</h5>
-
-            <!-- Filters -->
-            <div class="row g-3 mb-4" data-aos="fade-right">
-                <div class="col-md-3">
-                    <label for="searchName" class="form-label">Search by Name</label>
-                    <input type="text" class="form-control" id="searchName" placeholder="Enter patient name">
+            <form asp-action="Dashboard" asp-controller="Dashboard" method="post">
+                <!-- Filters -->
+                <div class="row g-3 mb-4" data-aos="fade-right">
+                    <div class="col-md-3">
+                        <label for="searchName" class="form-label">Search by Name</label>
+                        <input type="text" class="form-control" asp-for="Name" placeholder="Enter patient name">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="fromDate" class="form-label">From Date</label>
+                        <input type="date" class="form-control" asp-for="fromDate">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="toDate" class="form-label">To Date</label>
+                        <input type="date" class="form-control" asp-for="toDate">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="statusFilter" class="form-label">Status</label>
+                        <select class="form-select" asp-for="status">
+                            <option value="">All</option>
+                            <option>Pending</option>
+                            <option>Complete</option>
+                            <option>Process</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex align-items-end gap-2">
+                        <button type="submit" class="btn btn-primary w-50">Apply Filters</button>
+                        <a asp-action="Dashboard" asp-controller="Dashboard" class="btn btn-secondary w-50">Clear</a>
+                    </div>
                 </div>
-                <div class="col-md-2">
-                    <label for="fromDate" class="form-label">From Date</label>
-                    <input type="date" class="form-control" id="fromDate">
-                </div>
-                <div class="col-md-2">
-                    <label for="toDate" class="form-label">To Date</label>
-                    <input type="date" class="form-control" id="toDate">
-                </div>
-                <div class="col-md-2">
-                    <label for="statusFilter" class="form-label">Status</label>
-                    <select class="form-select" id="statusFilter">
-                        <option value="">All</option>
-                        <option>Pending</option>
-                        <option>Completed</option>
-                        <option>Process</option>
-                    </select>
-                </div>
-                <div class="col-md-3 d-flex align-items-end">
-                    <button class="btn btn-primary w-100">Apply Filters</button>
-                </div>
-            </div>
+            </form>
 
             <!-- Table -->
             <table class="table table-hover" data-aos="fade-up" data-aos-delay="200">
@@ -166,7 +168,36 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model.latestAppointments != null && Model.latestAppointments.Any())
+                    @if (Model.filteredAppointments != null && Model.filteredAppointments.Any())
+                    {
+                        foreach (var appt in Model.filteredAppointments)
+                        {
+                            <tr>
+                                <td>@appt.PatientName</td>
+                                <td>@appt.DoctorName</td>
+                                <td>@appt.AppointmentDate.ToString("dd-MM-yyyy")</td>
+                                <td>
+                                    @if (appt.AppointmentStatus?.ToLower() == "pending")
+                                    {
+                                        <span class="status-badge status-pending">Pending</span>
+                                    }
+                                    else if (appt.AppointmentStatus?.ToLower() == "complete")
+                                    {
+                                        <span class="status-badge status-completed">Completed</span>
+                                    }
+                                    else if (appt.AppointmentStatus?.ToLower() == "process")
+                                    {
+                                        <span class="status-badge status-process">Process</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="status-badge status-cancelled">@appt.AppointmentStatus</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else if (Model.latestAppointments != null && Model.latestAppointments.Any())
                     {
                         foreach (var appt in Model.latestAppointments)
                         {
@@ -175,15 +206,15 @@
                                 <td>@appt.DoctorName</td>
                                 <td>@appt.AppointmentDate.ToString("dd-MM-yyyy")</td>
                                 <td>
-                                    @if (appt.AppointmentStatus == "pending")
+                                    @if (appt.AppointmentStatus?.ToLower() == "pending")
                                     {
                                         <span class="status-badge status-pending">Pending</span>
                                     }
-                                    else if (appt.AppointmentStatus == "complete")
+                                    else if (appt.AppointmentStatus?.ToLower() == "complete")
                                     {
                                         <span class="status-badge status-completed">Completed</span>
                                     }
-                                    else if (appt.AppointmentStatus == "process")
+                                    else if (appt.AppointmentStatus?.ToLower() == "process")
                                     {
                                         <span class="status-badge status-process">Process</span>
                                     }

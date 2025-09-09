@@ -165,8 +165,9 @@ namespace Hospital_Management_System.Controllers
             }
             catch (Exception ex)
             {
-                TempData["AdminMessage"] = "An error occurred: " + ex.Message;
+                TempData["AdminMessage"] = "An error occurred";
                 TempData["AdminMessageType"] = "error";
+                Console.WriteLine(ex.Message);
                 return View();
             }
         }
